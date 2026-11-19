@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
     {
         // Membuat akun Admin (role di-set langsung, bukan lewat mass assignment)
         $admin = new User([
-            'name'     => 'Admin KIP',
+            'name'     => 'Admin Beasiswa',
             'email'    => 'admin@kipkampus.com',
             'password' => Hash::make('password'),
         ]);

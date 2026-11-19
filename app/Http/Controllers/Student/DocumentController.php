@@ -30,7 +30,7 @@ class DocumentController extends Controller
 
         $application = Auth::user()->mahasiswa?->application;
         if (! $application) {
-            return back()->withErrors(['berkas' => 'Isi form pendaftaran KIP terlebih dahulu.']);
+            return back()->withErrors(['berkas' => 'Isi form pendaftaran Beasiswa terlebih dahulu.']);
         }
 
         // hanya pemilik, dan hanya selama status masih draft
