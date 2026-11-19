@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Student\DocumentController;
+use App\Http\Controllers\Admin\AuditLogController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', fn () => view('welcome'));
 
@@ -16,12 +19,18 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', fn () => view('student.dashboard'))->name('dashboard');
     // Dessy menambah route form pendaftaran & dokumen di sini
+     Route::get('/dokumen', [DocumentController::class, 'index'])->name('dokumen');
+    Route::post('/dokumen', [DocumentController::class, 'store'])->name('dokumen.store');
 });
 
+// unduh: boleh mahasiswa pemilik atau admin (dicek oleh Policy)
+Route::get('/dokumen/{document}/unduh', [DocumentController::class, 'download'])
+    ->middleware(['auth', 'throttle:20,1'])
+    ->name('dokumen.unduh');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
-    // route admin lain menyusul
+    Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
 });
 
 
