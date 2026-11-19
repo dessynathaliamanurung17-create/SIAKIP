@@ -11,29 +11,38 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-//Kolom yang boleh diisi secara massal
+    //Kolom yang boleh diisi secara massal
     protected $fillable = [
         'name',
         'email',
-        'password',];
-//Kolom yang disembunyikan.
-//Password dan remember_token tidak boleh
-//ditampilkan ketika data User diubah menjadi JSON.
+        'password',
+    ];
+    //Kolom yang disembunyikan.
+    //Password dan remember_token tidak boleh
+    //ditampilkan ketika data User diubah menjadi JSON.
     protected $hidden = [
         'password',
-        'remember_token',];
-
- //Menentukan tipe data beberapa kolom.
-    protected function casts(): array
-{
-    return [
-    'email_verified_at' => 'datetime',
-    'password' => 'hashed',
+        'remember_token',
     ];
-}
 
-//relasi user dengan akun mahasiswa
+    //Menentukan tipe data beberapa kolom.
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    //relasi user dengan akun mahasiswa
     public function mahasiswa()
-{
-    return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
-}}
+    {
+        return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
+    }
+
+    
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+}

@@ -33,4 +33,9 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function application() { 
+        return $this->hasOne(Application::class, 'mahasiswa_nim', 'nim'); 
+    }
+
 }
