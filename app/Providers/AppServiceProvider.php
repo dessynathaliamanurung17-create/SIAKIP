@@ -8,6 +8,7 @@ use App\Observers\AuditObserver;
 use App\Services\AuditLogger;
 use Illuminate\Auth\Events\{Login, Logout, Failed};
 use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Lockout;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,15 +24,24 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-{
-    Application::observe(AuditObserver::class);
-    Document::observe(AuditObserver::class);
-    Mahasiswa::observe(AuditObserver::class);
+    {
+        Application::observe(AuditObserver::class);
+        Document::observe(AuditObserver::class);
+        Mahasiswa::observe(AuditObserver::class);
 
-    Event::listen(Login::class,  fn ($e) => AuditLogger::record('login'));
-    Event::listen(Logout::class, fn ($e) => AuditLogger::record('logout'));
-    Event::listen(Failed::class, fn ($e) => AuditLogger::record(
-        'login_gagal', null, null, ['email' => $e->credentials['email'] ?? null]
-    ));
-}
+        Event::listen(Login::class,  fn($e) => AuditLogger::record('login'));
+        Event::listen(Logout::class, fn($e) => AuditLogger::record('logout'));
+        Event::listen(Failed::class, fn($e) => AuditLogger::record(
+            'login_gagal',
+            null,
+            null,
+            ['email' => $e->credentials['email'] ?? null]
+        ));
+        Event::listen(\Illuminate\Auth\Events\Lockout::class, fn($e) => AuditLogger::record(
+            'login_terkunci',
+            null,
+            null,
+            ['email' => $e->request->input('email')]
+        ));
+    }
 }

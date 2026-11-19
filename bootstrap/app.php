@@ -15,8 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'face.verified' => \App\Http\Middleware\FaceVerified::class,
         ]);
+        $middleware->web(append: [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':120,1',
+        ]);
     })
-    
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

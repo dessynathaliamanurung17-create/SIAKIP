@@ -17,6 +17,7 @@
                     <x-nav-link :href="route('admin.pelamar')" :active="request()->routeIs('admin.pelamar*')">Data Pelamar</x-nav-link>
                     <x-nav-link :href="route('admin.verifikasi')" :active="request()->routeIs('admin.verifikasi')">Verifikasi Dokumen</x-nav-link>
                     <x-nav-link :href="route('admin.audit-log')" :active="request()->routeIs('admin.audit-log')">Audit Log</x-nav-link>
+                    <x-nav-link :href="route('admin.sistem')" :active="request()->routeIs('admin.sistem')">Sistem</x-nav-link>
                     @else
                     <x-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('mahasiswa.dokumen')" :active="request()->routeIs('mahasiswa.dokumen*')">Dokumen</x-nav-link>

@@ -6,6 +6,8 @@ use App\Http\Controllers\FaceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DocumentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HealthController;
+
 
 Route::get('/', fn () => view('welcome'));
 
@@ -23,6 +25,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('face')->name('face.')->gr
     Route::get('/verifikasi', [FaceController::class, 'verifyForm'])->name('verify');
     Route::post('/verifikasi', [FaceController::class, 'verify'])->middleware('throttle:5,1')->name('verify.store');
 });
+
+Route::get('/health', [HealthController::class, 'publik'])->middleware('throttle:30,1');
+
 
 // area mahasiswa: wajib login + role + wajah terverifikasi
 Route::middleware(['auth', 'role:mahasiswa', 'face.verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
@@ -48,6 +53,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/verifikasi', [AdminApplicationController::class, 'verifikasi'])->name('verifikasi');
     Route::put('/dokumen/{document}/verifikasi', [AdminApplicationController::class, 'verifikasiDokumen'])->name('dokumen.verifikasi');
+
+    Route::get('/sistem', [HealthController::class, 'sistem'])->name('sistem');
+Route::post('/sistem/backup', [HealthController::class, 'backup'])->middleware('throttle:3,1')->name('sistem.backup');
 });
 
 Route::middleware('auth')->group(function () {
