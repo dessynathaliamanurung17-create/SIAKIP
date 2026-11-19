@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Student\DocumentController;
 use App\Http\Controllers\Admin\AuditLogController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\ApplicationController as AdminApplicationController;
 
 Route::get('/', fn () => view('welcome'));
 
@@ -31,6 +31,13 @@ Route::get('/dokumen/{document}/unduh', [DocumentController::class, 'download'])
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
     Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
+
+    Route::get('/pelamar', [AdminApplicationController::class, 'index'])->name('pelamar');
+    Route::get('/pelamar/{application}', [AdminApplicationController::class, 'show'])->name('pelamar.show');
+    Route::put('/pelamar/{application}/seleksi', [AdminApplicationController::class, 'updateSeleksi'])->name('pelamar.seleksi');
+
+    Route::get('/verifikasi', [AdminApplicationController::class, 'verifikasi'])->name('verifikasi');
+    Route::put('/dokumen/{document}/verifikasi', [AdminApplicationController::class, 'verifikasiDokumen'])->name('dokumen.verifikasi');
 });
 
 

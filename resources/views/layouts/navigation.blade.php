@@ -12,9 +12,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if (auth()->user()->isAdmin())
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">Dashboard</x-nav-link>
+                    <x-nav-link :href="route('admin.pelamar')" :active="request()->routeIs('admin.pelamar*')">Data Pelamar</x-nav-link>
+                    <x-nav-link :href="route('admin.verifikasi')" :active="request()->routeIs('admin.verifikasi')">Verifikasi Dokumen</x-nav-link>
+                    <x-nav-link :href="route('admin.audit-log')" :active="request()->routeIs('admin.audit-log')">Audit Log</x-nav-link>
+                    @else
+                    <x-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">Dashboard</x-nav-link>
+                    <x-nav-link :href="route('mahasiswa.dokumen')" :active="request()->routeIs('mahasiswa.dokumen*')">Dokumen</x-nav-link>
+                    {{-- Pendaftaran & Status Seleksi ditambah setelah route-nya dibuat Dessy --}}
+                    @endif
                 </div>
             </div>
 
@@ -43,7 +50,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -89,7 +96,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
