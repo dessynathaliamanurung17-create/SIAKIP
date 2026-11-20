@@ -20,7 +20,9 @@
                     <x-nav-link :href="route('admin.sistem')" :active="request()->routeIs('admin.sistem')">Sistem</x-nav-link>
                     @else
                     <x-nav-link :href="route('mahasiswa.dashboard')" :active="request()->routeIs('mahasiswa.dashboard')">Dashboard</x-nav-link>
+                    <x-nav-link :href="route('mahasiswa.pendaftaran')" :active="request()->routeIs('mahasiswa.pendaftaran*')">Pendaftaran Beasiswa</x-nav-link>
                     <x-nav-link :href="route('mahasiswa.dokumen')" :active="request()->routeIs('mahasiswa.dokumen*')">Dokumen</x-nav-link>
+                    <x-nav-link :href="route('mahasiswa.status')" :active="request()->routeIs('mahasiswa.status')">Status Seleksi</x-nav-link>
                     {{-- Pendaftaran & Status Seleksi ditambah setelah route-nya dibuat Dessy --}}
                     @endif
                 </div>

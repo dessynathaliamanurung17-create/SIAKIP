@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Student\DocumentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\Student\ApplicationController;
 
 
 Route::get('/', fn () => view('welcome'));
@@ -24,20 +25,29 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('face')->name('face.')->gr
     Route::post('/daftar', [FaceController::class, 'enroll'])->middleware('throttle:5,1')->name('enroll.store');
     Route::get('/verifikasi', [FaceController::class, 'verifyForm'])->name('verify');
     Route::post('/verifikasi', [FaceController::class, 'verify'])->middleware('throttle:5,1')->name('verify.store');
+    
 });
 
-Route::get('/health', [HealthController::class, 'publik'])->middleware('throttle:30,1');
+Route::get('/health', [HealthController::class, 'publik'])
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Routing\Middleware\ThrottleRequests::class,
+    ]);
 
-
+    
 // area mahasiswa: wajib login + role + wajah terverifikasi
 Route::middleware(['auth', 'role:mahasiswa', 'face.verified'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-    Route::get('/dashboard', fn () => view('student.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [ApplicationController::class, 'dashboard'])->name('dashboard');
+    Route::get('/pendaftaran', [ApplicationController::class, 'form'])->name('pendaftaran');
+    Route::post('/pendaftaran', [ApplicationController::class, 'store'])->name('pendaftaran.store');
+    Route::get('/status', [ApplicationController::class, 'status'])->name('status');
 
     Route::get('/dokumen', [DocumentController::class, 'index'])->name('dokumen');
     Route::post('/dokumen', [DocumentController::class, 'store'])->name('dokumen.store');
-    // Dessy menambah route pendaftaran & status di sini
 });
-
 // unduh: mahasiswa pemilik (harus lolos wajah) atau admin, dicek oleh Policy
 Route::get('/dokumen/{document}/unduh', [DocumentController::class, 'download'])
     ->middleware(['auth', 'face.verified', 'throttle:20,1'])
