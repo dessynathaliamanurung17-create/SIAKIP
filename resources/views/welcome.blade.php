@@ -975,7 +975,7 @@
 
             <div class="brand">
                 <div class="brand-logo">
-                    <img src="{{ asset('build/assets/image/logo sibeka.png') }}"
+                    <img src="{{ asset('build/assets/image/logo polmed.png') }}"
                         alt="Logo SIBEKA POLMED"
                         onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=POLMED&background=07122f&color=fff';">
                 </div>
