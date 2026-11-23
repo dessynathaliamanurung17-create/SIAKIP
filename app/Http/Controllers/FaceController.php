@@ -12,6 +12,7 @@ class FaceController extends Controller
     public function enrollForm()
     {
         $mhs = auth()->user()->mahasiswa;
+        abort_if(! $mhs, 403, 'Profil mahasiswa tidak ditemukan.');
 
         // sudah punya wajah: harus lolos verifikasi dulu sebelum boleh mengganti
         if ($mhs->face_descriptor && ! session('face_verified')) {
@@ -46,6 +47,7 @@ class FaceController extends Controller
     public function verifyForm()
     {
         $mhs = auth()->user()->mahasiswa;
+        abort_if(! $mhs, 403, 'Profil mahasiswa tidak ditemukan.');
 
         if (! $mhs->face_descriptor) {
             return redirect()->route('face.enroll');
