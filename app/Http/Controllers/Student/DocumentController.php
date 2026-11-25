@@ -33,12 +33,21 @@ class DocumentController extends Controller
             return back()->withErrors(['berkas' => 'Isi form pendaftaran Beasiswa terlebih dahulu.']);
         }
 
-        // hanya pemilik, dan hanya selama status masih draft
-        Gate::authorize('update', $application);
+        $existingDoc = $application->documents()->where('jenis', $request->jenis)->first();
+
+        // Pemilik boleh unggah saat masih draft, ATAU revisi khusus dokumen yang berstatus tidak_valid saat status diajukan
+        $bolehRevisi = $application->mahasiswa_nim === Auth::user()->mahasiswa?->nim
+            && $application->status === 'diajukan'
+            && $existingDoc !== null
+            && $existingDoc->status_verifikasi === 'tidak_valid';
+
+        if (! $bolehRevisi) {
+            Gate::authorize('update', $application);
+        }
 
         $meta = $encryptor->store($request->file('berkas'));
 
-        $doc = $application->documents()->where('jenis', $request->jenis)->first() ?? new Document();
+        $doc = $existingDoc ?? new Document();
         $oldPath = $doc->path;
 
         $doc->fill([

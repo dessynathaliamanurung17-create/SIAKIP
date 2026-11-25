@@ -1,79 +1,81 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-                <h2 class="font-bold text-2xl text-slate-900 tracking-tight">Data Pelamar Beasiswa</h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                    Daftar seluruh berkas pengajuan beasiswa mahasiswa Politeknik Negeri Medan.
-                </p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 shadow-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    Total Terdata: {{ $applications->total() ?? count($applications) }} Pelamar
+            <h2 class="font-bold text-2xl text-slate-900 tracking-tight">Data Pelamar</h2>
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                    {{ $applications->total() ?? count($applications) }} Pelamar
                 </span>
+                <a href="{{ route('admin.pelamar.export', request()->query()) }}"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span>Export CSV</span>
+                </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50/70 min-h-screen">
+    <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             <!-- CARD UTAMA KELOLA DATA PELAMAR -->
-            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden p-6 sm:p-7 space-y-6">
-                
-                <!-- HEADER & TOOLBAR FILTER STATUS -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                            </div>
-                            <h3 class="font-bold text-base text-slate-900">Daftar Berkas Masuk</h3>
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-5 sm:p-6 space-y-5">
+
+                <!-- TOOLBAR PENCARIAN & FILTER -->
+                <form method="GET" action="{{ route('admin.pelamar') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div class="sm:col-span-5 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </div>
-                        <p class="text-xs text-slate-500">Filter data berdasarkan tahapan status seleksi pelamar</p>
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, NIM, jurusan, atau prodi..."
+                            class="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                     </div>
 
-                    <!-- FORM FILTER STATUS -->
-                    <form method="GET" class="flex flex-wrap items-center gap-2.5">
-                        <div class="relative">
-                            <select name="status" 
-                                class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition pr-8 cursor-pointer shadow-sm">
-                                <option value="">Semua Status Pendaftaran</option>
-                                @foreach (['draft', 'diajukan', 'diverifikasi', 'ditolak'] as $s)
-                                    <option value="{{ $s }}" @selected(request('status') === $s)>
-                                        Status: {{ ucfirst($s) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="sm:col-span-3">
+                        <select name="status"
+                            class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="">Semua Status</option>
+                            @foreach (['draft', 'diajukan', 'diverifikasi', 'ditolak'] as $s)
+                                <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        <button type="submit" 
-                            class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs tracking-wide uppercase transition shadow-sm hover:shadow">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                    <div class="sm:col-span-2">
+                        <select name="hasil_akhir"
+                            class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <option value="">Semua Hasil</option>
+                            <option value="diterima" @selected(request('hasil_akhir') === 'diterima')>Diterima</option>
+                            <option value="ditolak" @selected(request('hasil_akhir') === 'ditolak')>Ditolak</option>
+                            <option value="belum" @selected(request('hasil_akhir') === 'belum')>Belum Ditetapkan</option>
+                        </select>
+                    </div>
+
+                    <div class="sm:col-span-2 flex items-center gap-2">
+                        <button type="submit"
+                            class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs transition shadow-sm">
                             <span>Filter</span>
                         </button>
 
-                        @if (request('status'))
-                            <a href="{{ url()->current() }}" 
-                                class="inline-flex items-center gap-1 px-3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-500 text-xs font-medium transition" title="Reset Filter">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                <span>Reset</span>
+                        @if (request()->hasAny(['q', 'status', 'hasil_akhir']))
+                            <a href="{{ route('admin.pelamar') }}"
+                                class="px-3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-500 text-xs font-semibold transition">
+                                Reset
                             </a>
                         @endif
-                    </form>
-                </div>
+                    </div>
+                </form>
 
                 <!-- TABEL DATA PELAMAR DENGAN GAYA SIBEKA POLMED -->
                 <div class="overflow-x-auto rounded-2xl border border-slate-100">
-                    <table class="w-full text-left text-xs border-collapse">
+                    <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-50/90 text-slate-500 font-bold uppercase tracking-wider text-[10px] border-b border-slate-200/80">
+                            <tr class="bg-slate-50/90 text-slate-600 font-semibold text-[13px] border-b border-slate-200/80">
                                 <th class="py-3.5 px-4">Nama Mahasiswa</th>
                                 <th class="py-3.5 px-4">NIM</th>
                                 <th class="py-3.5 px-4">Program Studi</th>
                                 <th class="py-3.5 px-4">Status</th>
-                                <th class="py-3.5 px-4 text-center">Skor</th>
+                                <th class="py-3.5 px-4 text-right">Skor</th>
                                 <th class="py-3.5 px-4">Hasil Akhir</th>
                                 <th class="py-3.5 px-4 text-right">Aksi</th>
                             </tr>
@@ -89,24 +91,21 @@
                                     <!-- NAMA MAHASISWA & AVATAR -->
                                     <td class="py-3.5 px-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
+                                            <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center text-xs shrink-0">
                                                 {{ $initial }}
                                             </div>
-                                            <div>
-                                                <p class="font-bold text-slate-900 text-xs sm:text-sm">{{ $nama }}</p>
-                                                <span class="text-[10px] text-slate-400">Pendaftar Beasiswa</span>
-                                            </div>
+                                            <p class="font-semibold text-slate-900 text-sm">{{ $nama }}</p>
                                         </div>
                                     </td>
 
-                                    <!-- NIM -->
-                                    <td class="py-3.5 px-4 font-mono font-semibold text-slate-800">
+                                    <!-- NIM (Monospace) -->
+                                    <td class="py-3.5 px-4 font-mono font-medium text-slate-800 text-[13px]">
                                         {{ $a->mahasiswa_nim }}
                                     </td>
 
                                     <!-- PROGRAM STUDI -->
                                     <td class="py-3.5 px-4">
-                                        <span class="font-semibold text-slate-800 block truncate max-w-[200px]" title="{{ $a->mahasiswa?->program_studi }}">
+                                        <span class="font-medium text-slate-800 block truncate max-w-[220px]" title="{{ $a->mahasiswa?->program_studi }}">
                                             {{ $a->mahasiswa?->program_studi ?? '-' }}
                                         </span>
                                     </td>
@@ -114,36 +113,36 @@
                                     <!-- STATUS PENDAFTARAN (BADGE WARNA) -->
                                     <td class="py-3.5 px-4">
                                         @if ($statusVal === 'diverifikasi')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                 Diverifikasi
                                             </span>
                                         @elseif ($statusVal === 'diajukan')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                                                 Diajukan
                                             </span>
                                         @elseif ($statusVal === 'ditolak')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                                                 Ditolak
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                                                 Draft
                                             </span>
                                         @endif
                                     </td>
 
-                                    <!-- SKOR -->
-                                    <td class="py-3.5 px-4 text-center">
-                                        @if ($a->skor)
-                                            <span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 font-bold text-slate-800 text-xs">
-                                                {{ $a->skor }}
+                                    <!-- SKOR (Monospace rata kanan) -->
+                                    <td class="py-3.5 px-4 text-right font-mono">
+                                        @if ($a->skor !== null)
+                                            <span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 font-semibold text-slate-900 text-[13px]">
+                                                {{ number_format((float) $a->skor, 2) }}
                                             </span>
                                         @else
-                                            <span class="text-slate-400 font-mono">-</span>
+                                            <span class="text-slate-400">-</span>
                                         @endif
                                     </td>
 
@@ -151,11 +150,11 @@
                                     <td class="py-3.5 px-4">
                                         @if ($a->hasil_akhir)
                                             @php $hasilStr = strtolower($a->hasil_akhir); @endphp
-                                            <span class="font-bold {{ str_contains($hasilStr, 'lolos') || str_contains($hasilStr, 'terima') ? 'text-emerald-700' : 'text-slate-800' }}">
-                                                {{ $a->hasil_akhir }}
+                                            <span class="font-semibold {{ str_contains($hasilStr, 'lolos') || str_contains($hasilStr, 'terima') ? 'text-emerald-700' : 'text-rose-700' }}">
+                                                {{ ucfirst($a->hasil_akhir) }}
                                             </span>
                                         @else
-                                            <span class="text-slate-400 italic text-[11px]">Belum ditetapkan</span>
+                                            <span class="text-slate-400 italic text-xs">Belum ditetapkan</span>
                                         @endif
                                     </td>
 

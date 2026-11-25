@@ -5,7 +5,6 @@ import forms from '@tailwindcss/forms';
 export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
 
@@ -13,6 +12,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                admin: ['Roboto', ...defaultTheme.fontFamily.sans],
+                mono: ['"JetBrains Mono"', '"IBM Plex Mono"', ...defaultTheme.fontFamily.mono],
             },
         },
     },
