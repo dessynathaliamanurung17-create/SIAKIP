@@ -111,22 +111,22 @@
 
                 <!-- Card 2: Status Verifikasi Realtime -->
                 @php
-                    $semuaTerunggah = $totalWajib > 0 && $terunggahCount === $totalWajib;
-                    $semuaTerverifikasi = $semuaTerunggah && $validCount === $totalWajib;
+                $semuaTerunggah = $totalWajib > 0 && $terunggahCount === $totalWajib;
+                $semuaTerverifikasi = $semuaTerunggah && $validCount === $totalWajib;
 
-                    if ($semuaTerverifikasi) {
-                        $statusBadgeText = 'Berkas Telah Diverifikasi';
-                        $statusBadgeClass = 'text-emerald-700 bg-emerald-50 border border-emerald-200';
-                        $statusIconClass = 'bg-emerald-50 text-emerald-600';
-                    } elseif ($semuaTerunggah) {
-                        $statusBadgeText = 'Menunggu Diverifikasi';
-                        $statusBadgeClass = 'text-amber-700 bg-amber-50 border border-amber-200';
-                        $statusIconClass = 'bg-amber-50 text-amber-600';
-                    } else {
-                        $statusBadgeText = 'Belum Diupload';
-                        $statusBadgeClass = 'text-amber-700 bg-amber-50 border border-amber-200';
-                        $statusIconClass = 'bg-amber-50 text-amber-600';
-                    }
+                if ($semuaTerverifikasi) {
+                $statusBadgeText = 'Berkas Telah Diverifikasi';
+                $statusBadgeClass = 'text-emerald-700 bg-emerald-50 border border-emerald-200';
+                $statusIconClass = 'bg-emerald-50 text-emerald-600';
+                } elseif ($semuaTerunggah) {
+                $statusBadgeText = 'Menunggu Diverifikasi';
+                $statusBadgeClass = 'text-amber-700 bg-amber-50 border border-amber-200';
+                $statusIconClass = 'bg-amber-50 text-amber-600';
+                } else {
+                $statusBadgeText = 'Belum Diupload';
+                $statusBadgeClass = 'text-amber-700 bg-amber-50 border border-amber-200';
+                $statusIconClass = 'bg-amber-50 text-amber-600';
+                }
                 @endphp
 
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
@@ -137,15 +137,15 @@
 
                         <div class="w-7 h-7 rounded-lg {{ $statusIconClass }} flex items-center justify-center">
                             @if ($semuaTerverifikasi)
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
                             @else
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                             @endif
                         </div>
                     </div>
@@ -455,59 +455,10 @@
                 @endforeach
             </div>
 
-            <!-- KARTU BANTUAN & INFORMASI KEMAHASISWAAN -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600 shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                    </div>
-
-                    <div class="text-xs">
-                        <h5 class="font-bold text-slate-800">
-                            Lokasi Layanan BAK
-                        </h5>
-
-                        <p class="text-slate-500 mt-0.5">
-                            Gedung Direktorat & Administrasi Kemahasiswaan Lt. 1
-                        </p>
-                    </div>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-width="2"
-                                d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600 shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
-
-                    <div class="text-xs">
-                        <h5 class="font-bold text-slate-800">
-                            Keamanan Dokumen
-                        </h5>
-
-                        <p class="text-slate-500 mt-0.5">
-                            Seluruh berkas disimpan aman dan dienkripsi
-                        </p>
-                    </div>
-                </div>
-
-            </div>
 
         </div>
+
+    </div>
     </div>
 
     <script>
@@ -518,7 +469,9 @@
             setInterval(async () => {
                 try {
                     const res = await fetch(window.location.href, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
                         credentials: 'same-origin',
                     });
                     if (!res.ok || res.redirected) return;
