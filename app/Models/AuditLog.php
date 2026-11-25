@@ -17,4 +17,9 @@ class AuditLog extends Model
         static::updating(fn () => throw new \LogicException('Audit log bersifat append-only.'));
         static::deleting(fn () => throw new \LogicException('Audit log tidak boleh dihapus.'));
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

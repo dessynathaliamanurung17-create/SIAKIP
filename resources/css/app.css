@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .admin-panel .font-mono {
+        font-variant-numeric: tabular-nums slashed-zero;
+    }
+}

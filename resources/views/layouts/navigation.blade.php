@@ -19,7 +19,7 @@
                     <!-- Teks Brand SIBEKA POLMED -->
                     <div class="text-left">
                         <div class="font-extrabold text-base text-white tracking-wide leading-tight">
-                            SIBEKA POLME
+                            SIBEKA POLMED
                         </div>
                         <p class="text-[11px] text-slate-400 tracking-tight hidden sm:block mt-0.5 font-normal">
                             Portal Beasiswa Resmi Politeknik Negeri Medan
@@ -101,15 +101,12 @@
                             {{ __('Profil Akun') }}
                         </x-dropdown-link>
 
-                        <!-- Form Logout -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault(); this.closest('form').submit();"
-                                class="text-xs text-red-600 hover:text-red-700 hover:bg-red-50">
-                                {{ __('Keluar (Log Out)') }}
-                            </x-dropdown-link>
-                        </form>
+                        <!-- Tombol Logout dengan Pop-up Konfirmasi -->
+                        <button type="button"
+                            @click="$dispatch('open-modal', 'confirm-logout')"
+                            class="block w-full px-4 py-2 text-start text-xs leading-5 text-red-600 hover:text-red-700 hover:bg-red-50 focus:outline-none transition duration-150 ease-in-out">
+                            {{ __('Keluar (Log Out)') }}
+                        </button>
                     </x-slot>
                 </x-dropdown>
                 @else
@@ -176,14 +173,11 @@
                     {{ __('Profil Akun') }}
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a href="{{ route('logout') }}"
-                        onclick="event.preventDefault(); this.closest('form').submit();"
-                        class="block px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300">
-                        {{ __('Keluar (Log Out)') }}
-                    </a>
-                </form>
+                <button type="button"
+                    @click="open = false; $dispatch('open-modal', 'confirm-logout')"
+                    class="block w-full text-left px-3 py-2 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300">
+                    {{ __('Keluar (Log Out)') }}
+                </button>
             </div>
             @else
             <div class="flex flex-col gap-2">

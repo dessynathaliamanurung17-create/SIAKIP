@@ -34,9 +34,9 @@
             if ($d) {
                 $terunggahCount++;
                 $st = strtolower($d->status_verifikasi ?? '');
-                if (str_contains($st, 'valid') || str_contains($st, 'setuju') || str_contains($st, 'diterima')) {
+                if ($st === 'valid') {
                     $validCount++;
-                } elseif (str_contains($st, 'tolak') || str_contains($st, 'revisi')) {
+                } elseif ($st === 'tidak_valid') {
                     $revisiCount++;
                 } else {
                     $menungguCount++;
@@ -206,15 +206,15 @@
                             <!-- Badge Status -->
                             <div>
                                 @if ($doc)
-                                    @if (str_contains($statusStr, 'valid') || str_contains($statusStr, 'setuju') || str_contains($statusStr, 'diterima'))
+                                    @if ($statusStr === 'valid')
                                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                             Terverifikasi / Valid
                                         </span>
-                                    @elseif (str_contains($statusStr, 'tolak') || str_contains($statusStr, 'revisi'))
+                                    @elseif ($statusStr === 'tidak_valid')
                                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
                                             <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                            Perlu Perbaikan
+                                            Perlu Revisi
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
@@ -276,23 +276,36 @@
                             </div>
                         @endif
 
-                        <!-- Form Upload / Ganti Berkas (Logika Backend 100% Asli) -->
-                        <form method="POST" action="{{ route('mahasiswa.dokumen.store') }}" enctype="multipart/form-data" 
-                            class="pt-2 flex flex-col sm:flex-row sm:items-center gap-3">
-                            @csrf
-                            <input type="hidden" name="jenis" value="{{ $kode }}">
+                        @php
+                            $bolehUpload = $application && (
+                                $application->status === 'draft'
+                                || ($application->status === 'diajukan' && $doc && $doc->status_verifikasi === 'tidak_valid')
+                            );
+                        @endphp
 
-                            <div class="relative flex-1">
-                                <input type="file" name="berkas" accept=".pdf,.jpg,.jpeg,.png" required 
-                                    class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 border border-slate-200 rounded-xl cursor-pointer bg-slate-50/50 focus:outline-none transition">
-                            </div>
+                        <!-- Form Upload / Revisi Berkas -->
+                        @if ($bolehUpload)
+                            <form method="POST" action="{{ route('mahasiswa.dokumen.store') }}" enctype="multipart/form-data"
+                                class="pt-2 flex flex-col sm:flex-row sm:items-center gap-3">
+                                @csrf
+                                <input type="hidden" name="jenis" value="{{ $kode }}">
 
-                            <button type="submit" 
-                                class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold text-white {{ $doc ? 'bg-slate-800 hover:bg-slate-900' : 'bg-blue-600 hover:bg-blue-700' }} shadow-sm transition">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                <span>{{ $doc ? 'Ganti Berkas' : 'Unggah Berkas' }}</span>
-                            </button>
-                        </form>
+                                <div class="relative flex-1">
+                                    <input type="file" name="berkas" accept=".pdf,.jpg,.jpeg,.png" required
+                                        class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 border border-slate-200 rounded-xl cursor-pointer bg-slate-50/50 focus:outline-none transition">
+                                </div>
+
+                                <button type="submit"
+                                    class="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold text-white {{ $doc && $doc->status_verifikasi === 'tidak_valid' ? 'bg-rose-600 hover:bg-rose-700' : ($doc ? 'bg-slate-800 hover:bg-slate-900' : 'bg-blue-600 hover:bg-blue-700') }} shadow-sm transition">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                                    <span>{{ $doc && $doc->status_verifikasi === 'tidak_valid' ? 'Unggah Revisi' : ($doc ? 'Ganti Berkas' : 'Unggah Berkas') }}</span>
+                                </button>
+                            </form>
+                        @elseif ($application)
+                            <p class="pt-1 text-xs text-slate-400">
+                                Berkas terkunci selama pendaftaran berstatus <span class="font-semibold text-slate-600">{{ $application->status }}</span>.
+                            </p>
+                        @endif
 
                     </div>
                 @endforeach

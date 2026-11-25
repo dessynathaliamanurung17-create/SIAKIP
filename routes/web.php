@@ -54,10 +54,11 @@ Route::get('/dokumen/{document}/unduh', [DocumentController::class, 'download'])
     ->name('dokumen.unduh');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
+    Route::get('/dashboard', [AdminApplicationController::class, 'dashboard'])->name('dashboard');
     Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
 
     Route::get('/pelamar', [AdminApplicationController::class, 'index'])->name('pelamar');
+    Route::get('/pelamar/export', [AdminApplicationController::class, 'export'])->middleware('throttle:10,1')->name('pelamar.export');
     Route::get('/pelamar/{application}', [AdminApplicationController::class, 'show'])->name('pelamar.show');
     Route::put('/pelamar/{application}/seleksi', [AdminApplicationController::class, 'updateSeleksi'])->name('pelamar.seleksi');
 
