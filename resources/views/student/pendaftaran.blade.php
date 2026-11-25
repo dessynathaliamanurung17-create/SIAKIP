@@ -1,4 +1,12 @@
-@php($terkunci = $application && $application->status !== 'draft')
+@php
+    $terkunci = $application && $application->status !== 'draft';
+    $statusApp = strtolower($application->status ?? 'draft');
+    $hasilAkhir = strtolower($application->hasil_akhir ?? '');
+
+    $dokumenJenis = $dokumenJenis ?? ($application ? $application->documents->pluck('jenis')->all() : []);
+    $dokWajib = ['kk' => 'KK', 'ktm' => 'KTM', 'penghasilan' => 'Slip Penghasilan'];
+    $dokKurang = array_diff(array_keys($dokWajib), $dokumenJenis);
+@endphp
 
 <x-app-layout>
     <x-slot name="header">
@@ -8,10 +16,25 @@
                 <p class="text-sm text-slate-500">Lengkapi berkas dan data akademik untuk pengajuan beasiswa mahasiswa.</p>
             </div>
             <div class="flex items-center gap-2">
-                @if ($terkunci)
+                @if ($hasilAkhir === 'diterima')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                        Hasil Akhir: Diterima
+                    </span>
+                @elseif ($hasilAkhir === 'ditolak' || $statusApp === 'ditolak')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-200">
+                        <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+                        Status: Ditolak
+                    </span>
+                @elseif ($statusApp === 'diverifikasi')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                        Status: Diverifikasi Admin
+                    </span>
+                @elseif ($terkunci)
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        Status: Terkunci (Diajukan)
+                        Status: Terkunci ({{ ucfirst($application->status) }})
                     </span>
                 @else
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
@@ -25,70 +48,6 @@
 
     <div class="py-8 bg-slate-50/70 min-h-screen">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-
-            <!-- HERO HEADER BANNER & STEPPER -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white shadow-xl p-6 sm:p-8">
-                <!-- Background Glow Decor -->
-                <div class="absolute -right-10 -top-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-10 -bottom-10 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-
-                <div class="relative z-10 space-y-4">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        PERIODE PENDAFTARAN TERBUKA: JALUR PRESTASI & BANTUAN
-                    </div>
-
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Formulir Pendaftaran Beasiswa</h1>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                            Lengkapi data diri, riwayat akademik, verifikasi ekonomi keluarga, serta pastikan berkas pendukung telah diunggah dengan cermat dan transparan.
-                        </p>
-                    </div>
-
-                    <!-- STEPPER NAVIGATION INDICATOR -->
-                    <div class="pt-6 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
-                                ✓
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tahap 01</p>
-                                <p class="text-xs font-semibold text-slate-200">Identitas Diri</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-lg shadow-blue-500/40 shrink-0">
-                                02
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-blue-300 uppercase tracking-wider font-semibold">Tahap 02</p>
-                                <p class="text-xs font-semibold text-white">Data Akademik</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3 opacity-75">
-                            <div class="w-9 h-9 rounded-xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0">
-                                03
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tahap 03</p>
-                                <p class="text-xs font-semibold text-slate-300">Kondisi Ekonomi</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3 opacity-75">
-                            <div class="w-9 h-9 rounded-xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0">
-                                04
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tahap 04</p>
-                                <p class="text-xs font-semibold text-slate-300">Finalisasi</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- NOTIFIKASI STATUS & ALERTS -->
             @if (session('status'))
@@ -113,11 +72,52 @@
             @endif
 
             @if ($terkunci)
-                <div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl shadow-sm">
-                    <svg class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    <div>
-                        <div class="font-semibold text-sm">Pendaftaran Telah Diajukan</div>
-                        <p class="text-xs text-amber-700 mt-0.5">Formulir pendaftaran sudah dikunci dan sedang dalam tahap seleksi. Data tidak dapat disunting kembali.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-amber-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        <div>
+                            <div class="font-bold text-sm">
+                                Status Pendaftaran: {{ ucfirst($application->status) }}
+                                @if ($application->hasil_akhir)
+                                    • Hasil Akhir: {{ ucfirst($application->hasil_akhir) }}
+                                @endif
+                            </div>
+                            <p class="text-xs text-amber-800 mt-0.5">
+                                Formulir dikunci untuk menjaga integritas data seleksi.
+                            </p>
+                        </div>
+                    </div>
+                    <a href="{{ route('mahasiswa.status') }}"
+                        class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs shrink-0 transition shadow-sm">
+                        <span>Lihat Status Seleksi</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            @endif
+
+            @if ($application && $application->hasil_verifikasi)
+                <!-- NOTIFIKASI MENONJOL: CATATAN DARI ADMIN -->
+                <div class="rounded-2xl bg-white border-2 border-blue-500 shadow-md shadow-blue-600/10 overflow-hidden">
+                    <div class="bg-blue-700 px-5 py-2.5 flex items-center justify-between gap-2 text-white">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            <span class="text-xs font-bold tracking-wide">Notifikasi & Catatan dari Admin Verifikator</span>
+                        </div>
+                        <span class="text-[11px] font-medium text-blue-100">
+                            {{ optional($application->updated_at)->diffForHumans() }}
+                        </span>
+                    </div>
+                    <div class="p-5 bg-blue-50/60 flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed">
+                            “{{ $application->hasil_verifikasi }}”
+                        </p>
                     </div>
                 </div>
             @endif
@@ -296,7 +296,7 @@
                                     <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                                         Jumlah Tanggungan <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="number" min="0" name="jumlah_tanggungan" value="{{ old('jumlah_tanggungan', $application->jumlah_tanggungan ?? '') }}" 
+                                    <input type="number" min="1" max="20" name="jumlah_tanggungan" value="{{ old('jumlah_tanggungan', $application->jumlah_tanggungan ?? '') }}" 
                                         class="block w-full text-sm font-semibold border-slate-200 rounded-xl focus:ring-blue-500 focus:border-blue-500 bg-slate-50/50 focus:bg-white placeholder-slate-400 transition" 
                                         placeholder="Contoh: 3" required>
                                     <p class="text-[11px] text-slate-500 mt-1">Jumlah anak/anggota keluarga yang ditanggung</p>
@@ -321,11 +321,27 @@
                                 <div class="p-2 bg-blue-100 text-blue-700 rounded-xl shrink-0 mt-0.5">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 </div>
-                                <div class="space-y-1">
-                                    <h4 class="font-bold text-sm text-blue-900">Perhatian Berkas Persyaratan Digital</h4>
-                                    <p class="text-xs text-blue-800 leading-relaxed">
-                                        Sebelum menekan tombol <strong>Ajukan</strong>, pastikan Anda telah mengunggah dokumen penting (Kartu Keluarga, KTM / KTP, Slip Gaji / Surat Keterangan Penghasilan, dan Sertifikat Prestasi jika ada) melalui menu <strong>Dokumen</strong>.
-                                    </p>
+                                <div class="space-y-1.5 flex-1">
+                                    <h4 class="font-bold text-sm text-blue-900">Kelengkapan Dokumen Wajib</h4>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        @foreach ($dokWajib as $kodeDok => $labelDok)
+                                            @php($ada = in_array($kodeDok, $dokumenJenis, true))
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border {{ $ada ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
+                                                {{ $ada ? '✓' : '!' }} {{ $labelDok }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                    @if (count($dokKurang) > 0)
+                                        <p class="text-xs text-blue-800">
+                                            Simpan Draft terlebih dahulu, lalu unggah dokumen wajib di menu
+                                            <a href="{{ route('mahasiswa.dokumen') }}" class="underline font-bold text-blue-700 hover:text-blue-900">Dokumen</a>
+                                            sebelum menekan tombol <strong>Ajukan Pendaftaran</strong>.
+                                        </p>
+                                    @else
+                                        <p class="text-xs text-emerald-700 font-medium">
+                                            Semua dokumen wajib sudah terunggah. Anda sudah siap mengajukan pendaftaran ke admin.
+                                        </p>
+                                    @endif
                                 </div>
                             </div>
 

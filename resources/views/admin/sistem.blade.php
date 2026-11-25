@@ -38,7 +38,7 @@
                             {{ $semuaOk ? 'Semua layanan normal' : 'Beberapa layanan terkendala' }}
                         </div>
                         <h1 class="text-xl font-bold tracking-tight">
-                            Status Server SIBEKA POLMED
+                            Status Server SIBEKA
                         </h1>
                     </div>
 

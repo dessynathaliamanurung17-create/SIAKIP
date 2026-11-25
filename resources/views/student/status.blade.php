@@ -8,7 +8,7 @@
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                     <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                    Portal SIBEKA POLMED
+                    Portal SIBEKA
                 </span>
             </div>
         </div>
@@ -45,7 +45,7 @@
             <div class="space-y-1.5">
                 <div class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200/60">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>PORTAL BEASISWA POLMED · TAHUN AKADEMIK 2025/2026 · Biro Administrasi Kemahasiswaan & Alumni</span>
+                    <span>PORTAL BEASISWA SIBEKA · TAHUN AKADEMIK 2025/2026 · Biro Administrasi Kemahasiswaan & Alumni</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Status Seleksi Beasiswa Mahasiswa</h1>
             </div>
@@ -102,7 +102,7 @@
                     <div class="pt-2 border-t border-slate-100 space-y-3 text-[11px] text-slate-500">
                         <div class="flex items-center gap-2 text-emerald-700">
                             <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            <span>Data terintegrasi secara langsung dengan Sistem Informasi Akademik (SIAKAD) & Database BAK POLMED.</span>
+                            <span>Data terintegrasi secara langsung dengan Sistem Informasi Akademik (SIAKAD) & Database Kemahasiswaan.</span>
                         </div>
 
                         <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200/60 text-slate-700 leading-relaxed">
@@ -181,7 +181,7 @@
                                                 <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Aktif</span>
                                             </div>
                                             <p class="text-xs text-slate-500 font-mono">
-                                                NIM: {{ $nim }} · Mahasiswa Aktif POLMED
+                                                NIM: {{ $nim }} · Mahasiswa Aktif
                                             </p>
                                         </div>
                                     </div>
@@ -231,18 +231,18 @@
                                         <span class="text-[11px] text-slate-400 shrink-0 font-medium">Status: {{ $application->status }}</span>
                                     </div>
 
-                                    <!-- Tahap 2: Verifikasi Dokumen Faktual (BAK POLMED) -->
+                                    <!-- Tahap 2: Verifikasi Dokumen Faktual -->
                                     <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-start justify-between gap-3">
                                         <div class="flex items-start gap-3">
                                             <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</div>
                                             <div>
                                                 <div class="flex items-center gap-2">
-                                                    <span class="font-bold text-slate-800">2. Verifikasi Dokumen Faktual (BAK POLMED)</span>
+                                                    <span class="font-bold text-slate-800">2. Verifikasi Dokumen Faktual (Tim Verifikator)</span>
                                                     <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
                                                         {{ $application->hasil_verifikasi ?? 'TERVERIFIKASI' }}
                                                     </span>
                                                 </div>
-                                                <p class="text-slate-500 text-[11px] mt-0.5">Validasi keabsahan berkas oleh Tim Verifikator BAK POLMED.</p>
+                                                <p class="text-slate-500 text-[11px] mt-0.5">Validasi keabsahan berkas oleh Tim Verifikator Beasiswa.</p>
                                             </div>
                                         </div>
                                         <span class="text-[11px] text-slate-400 shrink-0 font-medium">Hasil: {{ $application->hasil_verifikasi ?? 'Belum ada' }}</span>
@@ -275,7 +275,7 @@
                                                     </span>
                                                 </div>
                                                 <p class="text-slate-500 text-[11px] mt-0.5">
-                                                    Hasil Akhir: <b>{{ $application->hasil_akhir ?? 'Belum ditetapkan' }}</b>. Koordinasi penerbitan SK Direktur POLMED & Bank Penyalur.
+                                                    Hasil Akhir: <b>{{ $application->hasil_akhir ?? 'Belum ditetapkan' }}</b>. Koordinasi penerbitan SK Penetapan & Bank Penyalur.
                                                 </p>
                                             </div>
                                         </div>
@@ -321,7 +321,7 @@
             <div id="pusat-bantuan" class="space-y-4 pt-4 border-t border-slate-200">
                 <div>
                     <h3 class="font-bold text-lg text-slate-900">Pusat Informasi & Layanan Seleksi</h3>
-                    <p class="text-xs text-slate-500">Kanal resmi pendampingan dan jadwal lanjutan seleksi beasiswa POLMED</p>
+                    <p class="text-xs text-slate-500">Kanal resmi pendampingan dan jadwal lanjutan seleksi beasiswa</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -331,7 +331,7 @@
                         </div>
                         <h4 class="font-bold text-sm text-slate-800">Jadwal Pengumuman SK</h4>
                         <p class="text-xs text-slate-500 leading-relaxed">
-                            Pengumuman final penerima SK Direktur Politeknik Negeri Medan direncanakan serentak sesuai kalender akademik melalui portal ini.
+                            Pengumuman final penerima SK Penetapan Beasiswa direncanakan serentak sesuai kalender akademik melalui portal ini.
                         </p>
                     </div>
 
@@ -339,7 +339,7 @@
                         <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         </div>
-                        <h4 class="font-bold text-sm text-slate-800">Loket BAK POLMED</h4>
+                        <h4 class="font-bold text-sm text-slate-800">Loket Layanan Kemahasiswaan</h4>
                         <p class="text-xs text-slate-500 leading-relaxed">
                             Pelayanan tatap muka bertempat di Gedung Direktorat Lt. 1, Bagian Administrasi Kemahasiswaan (BAK). Buka setiap hari kerja Senin - Jumat (08.30 - 15.30 WIB).
                         </p>

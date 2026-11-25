@@ -21,9 +21,10 @@ class ApplicationController extends Controller
     public function form()
     {
         $mhs = auth()->user()->mahasiswa;
-        $application = $mhs->application;
+        $application = $mhs?->application?->load('documents');
+        $dokumenJenis = $application ? $application->documents->pluck('jenis')->all() : [];
 
-        return view('student.pendaftaran', compact('mhs', 'application'));
+        return view('student.pendaftaran', compact('mhs', 'application', 'dokumenJenis'));
     }
 
     public function store(Request $request)

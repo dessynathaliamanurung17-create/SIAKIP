@@ -97,7 +97,7 @@
                             @forelse ($documents as $d)
                                 @php
                                     $mhs         = $d->application?->mahasiswa;
-                                    $namaMhs     = $mhs?->user?->name ?? 'Mahasiswa POLMED';
+                                    $namaMhs     = $mhs?->user?->name ?? 'Mahasiswa';
                                     $nimMhs      = $d->application?->mahasiswa_nim ?? ($mhs?->nim ?? '-');
                                     $prodiMhs    = $mhs?->program_studi ?? '-';
                                     $statusVerif = strtolower($d->status_verifikasi ?? 'menunggu');

@@ -10,7 +10,11 @@ use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Student\ApplicationController;
 
 
-Route::get('/', fn () => view('welcome'));
+Route::get('/', function () {
+    $penerimaAktif = \App\Models\Application::where('hasil_akhir', 'diterima')->count();
+
+    return view('welcome', compact('penerimaAktif'));
+});
 
 // satu pintu: setelah login diarahkan sesuai role
 Route::get('/dashboard', function () {
@@ -73,6 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/foto-profil/{mahasiswa}', [ProfileController::class, 'foto'])->name('foto.profil');
 });
 
 require __DIR__.'/auth.php';

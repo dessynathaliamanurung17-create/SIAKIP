@@ -66,7 +66,7 @@
                     </div>
                 </form>
 
-                <!-- TABEL DATA PELAMAR DENGAN GAYA SIBEKA POLMED -->
+                <!-- TABEL DATA PELAMAR -->
                 <div class="overflow-x-auto rounded-2xl border border-slate-100">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>

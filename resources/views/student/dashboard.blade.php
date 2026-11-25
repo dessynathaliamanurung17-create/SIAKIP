@@ -10,8 +10,12 @@
 
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-white/10 border border-white/20 text-white flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-white/10 border-2 border-white/25 text-white flex items-center justify-center font-black text-2xl shadow-inner shrink-0">
+                            @if ($mhs?->foto_url)
+                                <img src="{{ $mhs->foto_url }}" alt="Foto {{ auth()->user()->name }}" class="w-full h-full object-cover">
+                            @else
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            @endif
                         </div>
                         <div class="space-y-1">
                             <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-500/30 text-blue-300 border border-blue-400/30">
@@ -99,21 +103,27 @@
                     @if ($application)
                     @php
                     $status = strtolower($application->status ?? '');
+                    $hasilAkhir = strtolower($application->hasil_akhir ?? '');
                     @endphp
-                    @if (str_contains($status, 'draft'))
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                        Draft (Belum Diajukan)
-                    </span>
-                    @elseif (str_contains($status, 'lulus') || str_contains($status, 'diterima'))
+                    @if ($hasilAkhir === 'diterima')
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                         Lolos Seleksi
                     </span>
-                    @elseif (str_contains($status, 'tolak'))
+                    @elseif ($hasilAkhir === 'ditolak' || $status === 'ditolak')
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-800 border border-red-200">
                         <span class="w-2 h-2 rounded-full bg-red-500"></span>
                         Belum Memenuhi Syarat
+                    </span>
+                    @elseif ($status === 'draft')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        Draft (Belum Diajukan)
+                    </span>
+                    @elseif ($status === 'diverifikasi')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Berkas Diverifikasi
                     </span>
                     @else
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-200">
@@ -146,7 +156,7 @@
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                             <div>
                                 <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Dokumen Terunggah</span>
-                                <span class="text-base font-bold text-slate-800">{{ $jumlahDokumen }} Berkas Lengkap</span>
+                                <span class="text-base font-bold text-slate-800">{{ $jumlahDokumen }} Dokumen</span>
                             </div>
                             <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
                                 {{ $jumlahDokumen }}
@@ -194,36 +204,7 @@
                 </div>
             </div>
 
-            <!-- 4. PUSAT INFORMASI & TAUTAN KEMAHASISWAAN POLMED -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="text-xs space-y-1">
-                        <h5 class="font-bold text-slate-800 text-sm">Ketentuan Seleksi & Validasi</h5>
-                        <p class="text-slate-500 leading-relaxed">
-                            Data yang diinputkan akan diverifikasi silang dengan KHS resmi SIAKAD dan berkas digital yang Anda unggah.
-                        </p>
-                    </div>
-                </div>
 
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <div class="text-xs space-y-1">
-                        <h5 class="font-bold text-slate-800 text-sm">Pusat Layanan BAK POLMED</h5>
-                        <p class="text-slate-500 leading-relaxed">
-                            Jika terdapat ketidaksesuaian data identitas atau prodi, silakan hubungi bagian kemahasiswaan Gedung Direktorat Lt. 1.
-                        </p>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </div>

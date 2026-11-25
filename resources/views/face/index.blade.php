@@ -13,7 +13,7 @@
                         {{ $mode === 'enroll' ? 'Pendaftaran Wajah (Biometrik)' : 'Verifikasi Wajah (Autentikasi)' }}
                     </h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Sistem Keamanan & Verifikasi Identitas Mahasiswa SIBEKA POLMED
+                        Sistem Keamanan & Verifikasi Identitas Mahasiswa SIBEKA
                     </p>
                 </div>
             </div>

@@ -4,32 +4,67 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIBEKA POLMED - Sistem Informasi Beasiswa Politeknik Negeri Medan</title>
+    <title>SIBEKA - Sistem Informasi Beasiswa Mahasiswa</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&family=jetbrains-mono:500,600,700&display=swap" rel="stylesheet" />
 
     <style>
+        :root {
+            --navy: #0b1b3d;
+            --navy-deep: #07122b;
+            --blue: #1d4ed8;
+            --blue-hover: #1e40af;
+            --gold: #eab308;
+            --ink: #0f172a;
+            --muted: #475569;
+            --subtle: #64748b;
+            --surface: #f5f7fb;
+            --border: #e2e8f0;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #fff;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* NAVBAR */
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: var(--ink);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* NAVBAR PUTIH BERSIH */
         .navbar {
             width: 100%;
-            min-height: 100px;
-            background: #07122f;
+            min-height: 82px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 15px 32px;
+            padding: 12px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
         .navbar-container {
             width: 100%;
+            max-width: 1220px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
         }
@@ -38,18 +73,16 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            min-width: 330px;
         }
 
         .brand-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: white;
-            overflow: hidden;
+            width: 64px;
+            height: 64px;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .brand-logo img {
@@ -59,745 +92,648 @@
         }
 
         .brand-title {
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
+            color: var(--navy-deep);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
         }
 
         .brand-subtitle {
-            color: #9aa5bd;
+            color: var(--subtle);
             font-size: 12px;
-            margin-top: 5px;
+            font-weight: 500;
+            margin-top: 1px;
         }
 
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-left: auto;
         }
 
         .nav-link {
-            color: #d9deea;
+            color: var(--muted);
             text-decoration: none;
             font-size: 14px;
-            padding: 14px 20px;
-            border-radius: 12px;
-            transition: .2s;
+            font-weight: 600;
+            padding: 9px 15px;
+            border-radius: 9px;
+            transition: color 0.18s ease, background-color 0.18s ease;
         }
 
         .nav-link:hover {
-            color: white;
+            color: var(--navy);
+            background: #f1f5f9;
         }
 
         .nav-link.active {
-            background: white;
-            color: #172033;
-            font-weight: 600;
+            background: #eff6ff;
+            color: var(--blue);
         }
 
-        /* AUTH BUTTONS (LOGIN & REGISTER) */
         .auth-buttons {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-left: 25px;
+            margin-left: 22px;
         }
 
         .login-button {
-            background: #2563eb;
-            color: white;
+            background: var(--blue);
+            color: #ffffff;
             text-decoration: none;
             font-size: 14px;
-            padding: 13px 25px;
-            border-radius: 11px;
+            padding: 10px 22px;
+            border-radius: 9px;
             font-weight: 600;
-            transition: .2s;
+            transition: background-color 0.18s ease;
             display: inline-block;
         }
 
         .login-button:hover {
-            background: #1d4ed8;
+            background: var(--blue-hover);
         }
 
         .register-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: white;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: var(--ink);
             text-decoration: none;
             font-size: 14px;
-            padding: 12px 22px;
-            border-radius: 11px;
+            padding: 9px 20px;
+            border-radius: 9px;
             font-weight: 600;
-            transition: .2s;
+            transition: all 0.18s ease;
             display: inline-block;
         }
 
         .register-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: #f8fafc;
+            border-color: #94a3b8;
         }
 
         /* HERO */
         .hero {
             position: relative;
-            min-height: 515px;
-            background: linear-gradient(rgba(4, 15, 39, .70), rgba(4, 15, 39, .70)),
-            url("{{ asset('build/assets/image/pesawat.jpg') }}");
+            min-height: 540px;
+            background:
+                linear-gradient(100deg, rgba(7, 18, 43, 0.92) 0%, rgba(11, 27, 61, 0.80) 52%, rgba(15, 36, 82, 0.44) 100%),
+                url("{{ asset('images/logo%20polmed.jpeg') }}");
             background-position: center;
             background-size: cover;
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
+            padding: 72px 32px 116px;
         }
 
         .hero-content {
             width: 100%;
-            max-width: 1400px;
-            margin: auto;
-            padding: 55px 45px;
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #fde68a;
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 3px solid var(--gold);
         }
 
         .hero-title {
-            max-width: 850px;
-            color: white;
-            font-size: 54px;
+            max-width: 720px;
+            color: #ffffff;
+            font-size: 46px;
             font-weight: 800;
-            line-height: 1.05;
-            margin-bottom: 25px;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            margin-bottom: 18px;
         }
 
         .hero-title span {
-            color: #25d9f5;
+            color: #93c5fd;
         }
 
         .hero-description {
-            max-width: 850px;
-            color: #e2e8f0;
-            font-size: 18px;
+            max-width: 600px;
+            color: #dbeafe;
+            font-size: 16px;
             line-height: 1.7;
-            margin-bottom: 40px;
+            margin-bottom: 34px;
+            font-weight: 400;
         }
 
-        .hero-search {
-            width: 740px;
-            max-width: 100%;
-            height: 70px;
-            background: #071633;
-            border-radius: 15px;
+        /* TOMBOL AKSI HERO */
+        .hero-actions {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            padding: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            gap: 14px;
         }
 
-        .hero-search-input {
-            flex: 1;
-            height: 100%;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: white;
-            padding: 0 20px;
-            font-size: 15px;
-        }
-
-        .hero-search-input::placeholder {
-            color: #8d9ab2;
-        }
-
-        .hero-search-button {
-            height: 56px;
-            padding: 0 25px;
-            border: none;
-            border-radius: 12px;
-            background: #2563eb;
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .hero-search-button:hover {
-            background: #1d4ed8;
-        }
-
-        .search-feedback {
-            margin-top: 15px;
-            max-width: 740px;
-            padding: 14px 18px;
-            border-radius: 10px;
-            font-size: 13px;
-            line-height: 1.5;
-            background: rgba(7, 22, 51, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        /* STATISTIK DAN ALUR SELEKSI */
-        .scholarship-section {
-            background: #f8fafc;
-            padding: 35px 32px 55px;
-        }
-
-        .scholarship-container {
-            max-width: 1400px;
-            margin: auto;
-        }
-
-        .statistics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 45px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, .07);
-            min-height: 120px;
-            border: 1px solid #edf0f5;
-        }
-
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 7px;
-            background: #eff6ff;
-            color: #2563eb;
-            display: flex;
+        .hero-btn-primary {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 9px;
-            font-weight: bold;
+            gap: 8px;
+            padding: 14px 26px;
+            border-radius: 10px;
+            background: var(--blue);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 10px 24px rgba(29, 78, 216, 0.35);
+            transition: background-color 0.18s ease, transform 0.18s ease;
         }
 
-        .stat-number {
-            font-size: 21px;
-            font-weight: 800;
-            color: #172033;
-            margin-bottom: 4px;
+        .hero-btn-primary:hover {
+            background: var(--blue-hover);
+            transform: translateY(-1px);
+        }
+
+        .hero-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 24px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1.5px solid rgba(255, 255, 255, 0.30);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            backdrop-filter: blur(6px);
+            transition: background-color 0.18s ease, border-color 0.18s ease;
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+
+        /* STRIP STATISTIK OVERLAP ELEGAN */
+        .stats-wrapper {
+            max-width: 1220px;
+            margin: -56px auto 0;
+            padding: 0 32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .statistics-strip {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            overflow: hidden;
+        }
+
+        .stat-item {
+            padding: 28px 30px;
+            position: relative;
+        }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 24px;
+            bottom: 24px;
+            width: 1px;
+            background: var(--border);
         }
 
         .stat-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748b;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--subtle);
             margin-bottom: 6px;
         }
 
-        .stat-description {
-            font-size: 10px;
-            line-height: 1.5;
-            color: #8490a3;
-        }
-
-        .selection-header {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .selection-badge,
-        .information-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: #eff6ff;
-            color: #2563eb;
-            border: 1px solid #dbeafe;
-            font-size: 9px;
+        .stat-number {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 30px;
             font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .selection-title {
-            font-size: 25px;
-            font-weight: 800;
-            color: #172033;
+            color: var(--navy);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
             margin-bottom: 8px;
         }
 
-        .selection-description {
-            font-size: 12px;
-            color: #8490a3;
-            line-height: 1.6;
+        .stat-description {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        /* SECTION ALUR SELEKSI */
+        .scholarship-section {
+            background: #ffffff;
+            padding: 76px 32px 84px;
+        }
+
+        .scholarship-container {
+            max-width: 1220px;
+            margin: 0 auto;
+        }
+
+        .section-head {
+            max-width: 640px;
+            margin-bottom: 40px;
+        }
+
+        .section-kicker {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.65;
         }
 
         .selection-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            gap: 18px;
         }
 
         .selection-card {
-            background: white;
-            border: 1px solid #e8edf4;
-            border-radius: 11px;
-            padding: 17px 14px;
-            min-height: 180px;
-            transition: .2s;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .selection-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 7px 18px rgba(0, 0, 0, .07);
+            transform: translateY(-3px);
+            border-color: #bfdbfe;
+            box-shadow: 0 12px 26px rgba(29, 78, 216, 0.07);
         }
 
         .selection-number {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue);
             background: #eff6ff;
-            color: #2563eb;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            margin-bottom: 13px;
+            margin-bottom: 18px;
         }
 
         .selection-card h3 {
-            font-size: 12px;
-            color: #172033;
-            margin-bottom: 9px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+            line-height: 1.35;
         }
 
         .selection-card p {
-            font-size: 10px;
-            color: #8490a3;
+            font-size: 13.5px;
+            color: var(--muted);
             line-height: 1.6;
-            margin-bottom: 12px;
+            margin-bottom: 18px;
         }
 
         .selection-link {
-            display: block;
-            border-top: 1px solid #f1f3f6;
-            padding-top: 11px;
-            color: #2563eb;
-            font-size: 10px;
-            text-decoration: none;
+            font-size: 13px;
             font-weight: 600;
+            color: var(--blue);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.18s ease;
         }
 
-        /* KOMPONEN BEASISWA */
+        .selection-link:hover {
+            gap: 8px;
+        }
+
+        /* KOMPONEN, SYARAT & JADWAL */
         .information-section {
-            background: white;
-            padding: 45px 32px 55px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 80px 32px;
         }
 
         .information-container {
-            max-width: 1400px;
-            margin: auto;
+            max-width: 1220px;
+            margin: 0 auto;
         }
 
         .information-grid {
             display: grid;
-            grid-template-columns: 1.6fr 1fr;
-            gap: 35px;
+            grid-template-columns: 1.25fr 0.95fr;
+            gap: 36px;
             align-items: start;
-        }
-
-        .information-heading {
-            font-size: 24px;
-            color: #172033;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .information-subtitle {
-            color: #8490a3;
-            font-size: 11px;
-            line-height: 1.7;
-            margin-bottom: 20px;
         }
 
         .benefit-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 18px;
+            margin-bottom: 22px;
         }
 
         .benefit-card {
-            background: #f8fafc;
-            border: 1px solid #e8edf4;
-            border-radius: 10px;
-            padding: 17px;
-        }
-
-        .benefit-icon {
-            width: 28px;
-            height: 28px;
-            background: #d1fae5;
-            color: #059669;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-
-        .benefit-card:nth-child(2) .benefit-icon {
-            background: #dbeafe;
-            color: #2563eb;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--blue);
+            border-radius: 14px;
+            padding: 24px;
         }
 
         .benefit-card h3 {
-            color: #172033;
-            font-size: 12px;
-            margin-bottom: 7px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
         }
 
         .benefit-card p {
-            color: #8490a3;
-            font-size: 10px;
-            line-height: 1.6;
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.65;
         }
 
         .requirement-card {
-            margin-top: 14px;
-            padding: 17px;
-            background: #f8fafc;
-            border: 1px solid #dbeafe;
-            border-radius: 10px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 26px 28px;
         }
 
         .requirement-title {
-            color: #2563eb;
-            font-size: 11px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 13px;
+            color: var(--ink);
+            margin-bottom: 16px;
         }
 
         .requirement-list {
             list-style: none;
+            display: grid;
+            gap: 12px;
         }
 
         .requirement-list li {
             display: flex;
-            gap: 9px;
-            color: #64748b;
-            font-size: 10px;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--muted);
             line-height: 1.6;
-            margin-bottom: 7px;
         }
 
         .requirement-number {
-            flex-shrink: 0;
-            width: 17px;
-            height: 17px;
-            border-radius: 50%;
-            background: #dbeafe;
-            color: #2563eb;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: #eff6ff;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9px;
-            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        /* AGENDA */
+        /* AGENDA TIMELINE */
         .agenda-card {
-            background: white;
-            border: 1px solid #e8edf4;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 7px 18px rgba(0, 0, 0, .07);
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
         }
 
         .agenda-title {
-            font-size: 18px;
-            color: #172033;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 7px;
+            color: var(--ink);
+            letter-spacing: -0.015em;
+            margin-top: 6px;
+            margin-bottom: 6px;
         }
 
         .agenda-description {
-            color: #8490a3;
-            font-size: 10px;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .agenda-timeline {
+            position: relative;
+            padding-left: 22px;
+            border-left: 2px solid #e2e8f0;
+            display: grid;
+            gap: 20px;
         }
 
         .agenda-item {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            padding: 12px 10px;
-            background: #f8fafc;
-            border: 1px solid #edf0f5;
-            border-radius: 9px;
-            margin-bottom: 9px;
+            position: relative;
+        }
+
+        .agenda-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--blue);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 2px #bfdbfe;
         }
 
         .agenda-date {
-            min-width: 77px;
-            text-align: center;
-            padding: 7px 4px;
-            border-radius: 6px;
-            background: #dbeafe;
-            color: #2563eb;
-            font-size: 8px;
-            font-weight: 700;
-        }
-
-        .agenda-item:nth-child(3) .agenda-date {
-            background: #f3e8ff;
-            color: #9333ea;
-        }
-
-        .agenda-item:nth-child(4) .agenda-date {
-            background: #cffafe;
-            color: #0891b2;
-        }
-
-        .agenda-item:nth-child(5) .agenda-date {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .agenda-item:nth-child(6) .agenda-date {
-            background: #d1fae5;
-            color: #059669;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--blue);
+            margin-bottom: 3px;
         }
 
         .agenda-content h4 {
-            color: #172033;
-            font-size: 10px;
-            margin-bottom: 4px;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 3px;
         }
 
         .agenda-content p {
-            color: #8490a3;
-            font-size: 9px;
-            line-height: 1.5;
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.55;
         }
 
         .agenda-warning {
-            margin-top: 12px;
-            padding: 12px;
+            margin-top: 24px;
+            padding: 13px 16px;
+            border-radius: 10px;
             background: #fffbeb;
             border: 1px solid #fde68a;
-            border-radius: 9px;
-            color: #b45309;
-            font-size: 9px;
-            line-height: 1.6;
-        }
-
-        /* SAMBUTAN DIREKTUR */
-        .leader-section {
-            background: #f8fafc;
-            padding: 55px 32px;
-        }
-
-        .leader-container {
-            max-width: 1400px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: 35% 65%;
-            align-items: center;
-            gap: 35px;
-        }
-
-        .leader-photo-area {
-            text-align: center;
-        }
-
-        .leader-photo {
-            width: 210px;
-            height: 260px;
-            object-fit: cover;
-            object-position: center;
-            border-radius: 12px;
-            border: 2px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, .12);
-            background: #e2e8f0;
-        }
-
-        .leader-name {
-            margin-top: 12px;
-            color: #172033;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .leader-position {
-            color: #8490a3;
-            font-size: 10px;
-            margin-top: 4px;
-        }
-
-        .leader-content {
-            border-left: 1px solid #e2e8f0;
-            padding-left: 30px;
-        }
-
-        .leader-title {
-            color: #172033;
-            font-size: 28px;
-            line-height: 1.2;
-            font-weight: 800;
-            margin-bottom: 15px;
-        }
-
-        .leader-title span {
-            color: #2563eb;
-        }
-
-        .leader-description {
-            color: #64748b;
-            font-size: 11px;
-            line-height: 1.8;
-            margin-bottom: 12px;
+            color: #92400e;
+            font-size: 12.5px;
+            line-height: 1.55;
         }
 
         /* FOOTER */
         .footer {
-            background: #071321;
+            background: var(--navy-deep);
             color: #cbd5e1;
-            padding: 42px 32px 25px;
+            padding: 64px 32px 32px;
         }
 
         .footer-container {
-            max-width: 1400px;
-            margin: auto;
+            max-width: 1220px;
+            margin: 0 auto;
         }
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 2fr .9fr 1fr;
-            gap: 55px;
-            padding-bottom: 32px;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 17px;
+            gap: 14px;
+            margin-bottom: 16px;
         }
 
         .footer-logo {
-            width: 28px;
-            height: 28px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 4px;
         }
 
         .footer-brand h3 {
-            color: white;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 3px;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 800;
         }
 
         .footer-brand p {
-            color: #8490a3;
-            font-size: 9px;
+            color: #94a3b8;
+            font-size: 12.5px;
+            margin-top: 2px;
         }
 
         .footer-description {
-            color: #9aa7ba;
-            font-size: 10px;
-            line-height: 1.8;
-            max-width: 430px;
-            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #94a3b8;
+            margin-bottom: 14px;
+            max-width: 420px;
         }
 
         .footer-address {
-            color: #8490a3;
-            font-size: 10px;
-            line-height: 1.7;
+            font-size: 13px;
+            color: #cbd5e1;
         }
 
         .footer-column h4 {
-            color: white;
-            font-size: 10px;
+            color: #ffffff;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: .4px;
-            margin-bottom: 15px;
+            letter-spacing: 0.04em;
+            margin-bottom: 16px;
         }
 
         .footer-links {
             list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 9px;
+            display: grid;
+            gap: 10px;
         }
 
         .footer-links a {
-            color: #aab5c5;
-            font-size: 10px;
+            color: #94a3b8;
             text-decoration: none;
-            transition: .2s;
+            font-size: 14px;
+            transition: color 0.18s ease;
         }
 
         .footer-links a:hover {
-            color: #38bdf8;
+            color: #ffffff;
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(148, 163, 184, .15);
-            padding-top: 20px;
+            padding-top: 24px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .footer-copyright {
-            color: #718096;
-            font-size: 9px;
+            font-size: 13px;
+            color: #94a3b8;
         }
 
         .footer-bottom-links {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            font-size: 13px;
         }
 
         .footer-bottom-links a {
-            color: #8490a3;
+            color: #94a3b8;
             text-decoration: none;
-            font-size: 9px;
         }
 
         .footer-bottom-links a:hover {
-            color: white;
+            color: #ffffff;
         }
 
         /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .navbar {
-                height: auto;
-                padding: 15px 20px;
-            }
-
-            .navbar-container {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-
-            .brand {
-                min-width: auto;
-            }
-
-            .nav-menu {
-                width: 100%;
-                order: 3;
-                justify-content: center;
-                margin-left: 0;
-            }
-
-            .auth-buttons {
-                margin-left: auto;
-            }
-
+        @media (max-width: 1080px) {
             .selection-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
@@ -805,163 +741,84 @@
             .information-grid {
                 grid-template-columns: 1fr;
             }
-
-            .leader-container {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .leader-content {
-                border-left: none;
-                padding-left: 0;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 30px 20px;
-            }
-
-            .footer-brand-area {
-                grid-column: 1 / -1;
-            }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 860px) {
             .navbar {
-                padding: 14px 16px;
+                padding: 12px 20px;
             }
 
-            .brand-logo {
-                width: 40px;
-                height: 40px;
-            }
-
-            .brand-subtitle {
-                display: none;
+            .navbar-container {
+                flex-wrap: wrap;
+                gap: 12px;
             }
 
             .nav-menu {
-                overflow-x: auto;
+                order: 3;
+                width: 100%;
+                margin-left: 0;
                 justify-content: flex-start;
-            }
-
-            .nav-link {
-                font-size: 11px;
-                padding: 9px 12px;
-                white-space: nowrap;
+                overflow-x: auto;
+                padding-top: 8px;
+                border-top: 1px solid var(--border);
             }
 
             .auth-buttons {
-                gap: 6px;
-            }
-
-            .login-button,
-            .register-button {
-                font-size: 11px;
-                padding: 8px 12px;
+                margin-left: auto;
             }
 
             .hero {
-                min-height: 420px;
-            }
-
-            .hero-content {
-                padding: 45px 20px;
+                min-height: 440px;
+                padding: 56px 20px 92px;
             }
 
             .hero-title {
-                font-size: 30px;
+                font-size: 32px;
             }
 
             .hero-description {
-                font-size: 13px;
+                font-size: 14.5px;
             }
 
-            .hero-search {
-                height: auto;
+            .hero-actions {
                 flex-direction: column;
-                gap: 6px;
-                padding: 6px;
+                align-items: stretch;
             }
 
-            .hero-search-input {
+            .hero-btn-primary,
+            .hero-btn-secondary {
                 width: 100%;
-                height: 42px;
             }
 
-            .hero-search-button {
-                width: 100%;
+            .stats-wrapper {
+                padding: 0 20px;
+                margin-top: -42px;
+            }
+
+            .statistics-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-item:not(:last-child)::after {
+                top: auto;
+                bottom: 0;
+                left: 24px;
+                right: 24px;
+                width: auto;
+                height: 1px;
             }
 
             .scholarship-section,
             .information-section,
-            .leader-section {
-                padding: 35px 16px;
-            }
-
-            .statistics-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .selection-title {
-                font-size: 20px;
-            }
-
-            .selection-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .selection-card {
-                min-height: auto;
-            }
-
-            .selection-card p {
-                min-height: auto;
-            }
-
-            .benefit-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .information-heading {
-                font-size: 20px;
-            }
-
-            .agenda-card {
-                padding: 14px;
-            }
-
-            .leader-photo {
-                width: 190px;
-                height: 240px;
-            }
-
-            .leader-title {
-                font-size: 22px;
-            }
-
             .footer {
-                padding: 35px 20px 22px;
+                padding-left: 20px;
+                padding-right: 20px;
             }
 
+            .selection-grid,
+            .benefit-grid,
             .footer-grid {
                 grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .footer-brand-area {
-                grid-column: auto;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .footer-bottom-links {
-                flex-wrap: wrap;
-                gap: 10px;
             }
         }
     </style>
@@ -969,145 +826,92 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-
-            <div class="brand">
-                <div class="brand-logo">
-                    <img src="{{ asset('build/assets/image/logo polmed.png') }}"
-                        alt="Logo SIBEKA POLMED"
-                        onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=POLMED&background=07122f&color=fff';">
-                </div>
-
-                <div>
-                    <div class="brand-title">SIBEKA POLMED</div>
-                    <div class="brand-subtitle">
-                        Portal Beasiswa Resmi Politeknik Negeri Medan
-                    </div>
-                </div>
-            </div>
-
-            <div class="nav-menu">
-                <a href="{{ url('/') }}" class="nav-link active">Beranda</a>
-                <a href="#pendaftaran" class="nav-link">Pendaftaran</a>
-                <a href="#dokumen" class="nav-link">Dokumen</a>
-                <a href="#status-seleksi" class="nav-link">Status Seleksi</a>
-            </div>
-
-            <!-- MENU AUTH (LOGIN & REGISTER) -->
-            @if (Route::has('login'))
-                <div class="auth-buttons">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="login-button">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="login-button">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="register-button">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-        </div>
-    </nav>
-
+    @include('layouts.partials.welcome-navbar')
 
     <!-- HERO -->
     <section class="hero" id="status-seleksi">
         <div class="hero-content">
 
+            <div class="hero-eyebrow">Portal Resmi Seleksi Beasiswa Mahasiswa</div>
+
             <h1 class="hero-title">
-                Wujudkan Mimpi Kuliah Vokasi
+                Wujudkan Mimpi Kuliah
                 <br>
-                Bersama <span>Beasiswa POLMED</span>
+                Bersama <span>Beasiswa SIBEKA</span>
             </h1>
 
             <p class="hero-description">
                 Program bantuan pembiayaan pendidikan dan apresiasi prestasi
-                bagi mahasiswa aktif Politeknik Negeri Medan untuk menempuh
-                jenjang Diploma dan Sarjana Terapan secara unggul dan berdaya saing.
+                bagi mahasiswa aktif untuk menempuh pendidikan tinggi secara
+                unggul dan berdaya saing.
             </p>
 
-            <!-- FORM CEK STATUS SELEKSI BEASISWA -->
-            <form action="{{ url('/') }}" method="GET" class="hero-search">
-                <input type="text"
-                    name="keyword_pencarian"
-                    class="hero-search-input"
-                    value="{{ request('keyword_pencarian') }}"
-                    placeholder="Masukkan Nomor Registrasi Beasiswa / NIM Mahasiswa"
-                    required>
-
-                <button type="submit" class="hero-search-button">
-                    Cek Status Seleksi →
-                </button>
-            </form>
-
-            <!-- HASIL PENCARIAN RIIL DARI DATABASE -->
-            @if(request('keyword_pencarian'))
-                <div class="search-feedback">
-                    @if(isset($hasilPencarian) && $hasilPencarian)
-                        <div style="color: #4ade80; font-weight: bold; margin-bottom: 4px;">✓ Data Beasiswa Ditemukan</div>
-                        <div><strong>Nama:</strong> {{ $hasilPencarian->nama_lengkap }}</div>
-                        <div><strong>NIM:</strong> {{ $hasilPencarian->nim ?? '-' }}</div>
-                        <div><strong>Status Seleksi:</strong> <span style="color: #facc15; font-weight: bold; text-transform: uppercase;">{{ $hasilPencarian->status_seleksi }}</span></div>
-                    @else
-                        <div style="color: #f87171; font-weight: bold; margin-bottom: 4px;">✕ Data Tidak Ditemukan</div>
-                        <div>Nomor <strong>{{ request('keyword_pencarian') }}</strong> belum terdaftar dalam sistem seleksi beasiswa.</div>
+            <!-- TOMBOL AKSI UTAMA (LOGIS & AMAN SESUAI 2FA) -->
+            <div class="hero-actions">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="hero-btn-primary">
+                        <span>Buka Dashboard</span>
+                        <span>→</span>
+                    </a>
+                    <a href="#alur-seleksi" class="hero-btn-secondary">
+                        Lihat Alur Seleksi
+                    </a>
+                @else
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="hero-btn-primary">
+                            <span>Daftar Beasiswa</span>
+                            <span>→</span>
+                        </a>
                     @endif
-                </div>
-            @endif
+                    @if (Route::has('login'))
+                        <a href="{{ route('login') }}" class="hero-btn-secondary">
+                            Masuk &amp; Cek Status
+                        </a>
+                    @endif
+                @endauth
+            </div>
 
         </div>
     </section>
 
-
-    <!-- STATISTIK DAN ALUR SELEKSI -->
-    <section class="scholarship-section" id="pendaftaran">
-        <div class="scholarship-container">
-
-            <div class="statistics-grid">
-
-                <div class="stat-card">
-                    <div class="stat-icon">✓</div>
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">PEMBEBASAN BIAYA UKT</div>
-                    <p class="stat-description">
-                        Bagi seluruh mahasiswa penerima aktif berprestasi
-                        hingga masa studi selesai tepat waktu.
-                    </p>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">$</div>
-                    <div class="stat-number">Rp 5.000.000</div>
-                    <div class="stat-label">BIAYA HIDUP / SEMESTER</div>
-                    <p class="stat-description">
-                        Dana tunjangan prestasi dan pengembangan akademik
-                        yang disalurkan langsung per semester.
-                    </p>
-                </div>
-
-                <!-- DATA RIIL PENERIMA AKTIF (OTOMATIS 0 JIKA BELUM ADA DATA) -->
-                <div class="stat-card">
-                    <div class="stat-icon">♙</div>
-                    <div class="stat-number">{{ $penerimaAktif ?? 0 }}</div>
-                    <div class="stat-label">PENERIMA AKTIF TAHUN INI</div>
-                    <p class="stat-description">
-                        Total mahasiswa aktif yang menerima pembiayaan
-                        Beasiswa resmi POLMED tahun ini.
-                    </p>
-                </div>
-
+    <!-- STRIP STATISTIK RINGKAS -->
+    <div class="stats-wrapper">
+        <div class="statistics-strip">
+            <div class="stat-item">
+                <div class="stat-label">Pembebasan Biaya UKT</div>
+                <div class="stat-number">100%</div>
+                <p class="stat-description">
+                    Bagi mahasiswa penerima aktif hingga masa studi selesai tepat waktu.
+                </p>
             </div>
 
-            <div class="selection-header">
-                <span class="selection-badge">PANDUAN PENDAFTARAN</span>
-                <h2 class="selection-title">Alur Seleksi Beasiswa POLMED</h2>
-                <p class="selection-description">
-                    Ikuti 5 tahapan alur seleksi Beasiswa resmi
-                    Politeknik Negeri Medan berikut secara berurutan:
+            <div class="stat-item">
+                <div class="stat-label">Bantuan Biaya Hidup / Semester</div>
+                <div class="stat-number">Rp 5.000.000</div>
+                <p class="stat-description">
+                    Tunjangan prestasi dan pengembangan akademik disalurkan per semester.
+                </p>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-label">Penerima Aktif Tahun Ini</div>
+                <div class="stat-number">{{ $penerimaAktif ?? 0 }}</div>
+                <p class="stat-description">
+                    Total mahasiswa aktif yang menerima pembiayaan beasiswa tahun ini.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALUR SELEKSI -->
+    <section class="scholarship-section" id="alur-seleksi">
+        <div class="scholarship-container">
+
+            <div class="section-head">
+                <span class="section-kicker">Panduan Pendaftaran</span>
+                <h2 class="section-title">Alur Seleksi Beasiswa</h2>
+                <p class="section-subtitle">
+                    Calon penerima beasiswa mengikuti 5 tahapan seleksi resmi berikut secara berurutan.
                 </p>
             </div>
 
@@ -1118,11 +922,10 @@
                         <div class="selection-number">01</div>
                         <h3>Registrasi Akun</h3>
                         <p>
-                            Pembuatan akun calon pendaftar beasiswa melalui
-                            sistem portal resmi SIBEKA POLMED.
+                            Buat akun calon pendaftar melalui portal resmi SIBEKA menggunakan NIM dan email aktif.
                         </p>
                     </div>
-                    <a href="{{ Route::has('register') ? route('register') : '#pendaftaran' }}" class="selection-link">
+                    <a href="{{ Route::has('register') ? route('register') : '#alur-seleksi' }}" class="selection-link">
                         Daftar Akun →
                     </a>
                 </div>
@@ -1132,11 +935,10 @@
                         <div class="selection-number">02</div>
                         <h3>Pemberkasan</h3>
                         <p>
-                            Pengunggahan dokumen kelengkapan berkas akademik,
-                            sertifikat prestasi, dan data pendukung.
+                            Lengkapi formulir data akademik, kondisi ekonomi, dan unggah dokumen persyaratan.
                         </p>
                     </div>
-                    <a href="#dokumen" class="selection-link">Unggah Berkas →</a>
+                    <a href="#persyaratan" class="selection-link">Lihat Syarat →</a>
                 </div>
 
                 <div class="selection-card">
@@ -1144,11 +946,10 @@
                         <div class="selection-number">03</div>
                         <h3>Seleksi Berkas</h3>
                         <p>
-                            Verifikasi administratif, validasi keabsahan dokumen,
-                            dan penilaian kelayakan oleh tim seleksi beasiswa.
+                            Verifikasi administratif dan pemeriksaan keabsahan dokumen oleh tim verifikator.
                         </p>
                     </div>
-                    <a href="#status-seleksi" class="selection-link">Status Berkas →</a>
+                    <a href="#status-seleksi" class="selection-link">Cek Status →</a>
                 </div>
 
                 <div class="selection-card">
@@ -1156,367 +957,142 @@
                         <div class="selection-number">04</div>
                         <h3>Wawancara</h3>
                         <p>
-                            Tahap wawancara komprehensif, uji kompetensi vokasi,
-                            dan asesmen komitmen calon penerima beasiswa.
+                            Asesmen kelayakan, verifikasi faktual, dan wawancara bersama tim seleksi beasiswa.
                         </p>
                     </div>
-                    <a href="#status-seleksi" class="selection-link">Jadwal Wawancara →</a>
+                    <a href="#persyaratan" class="selection-link">Lihat Jadwal →</a>
                 </div>
 
                 <div class="selection-card">
                     <div>
                         <div class="selection-number">05</div>
-                        <h3>Pengumuman Hasil Seleksi</h3>
+                        <h3>Pengumuman Hasil</h3>
                         <p>
-                            Pengumuman resmi penetapan kelulusan dan publikasi
-                            SK Direktur Beasiswa POLMED.
+                            Penetapan kelulusan dan publikasi SK penetapan penerima beasiswa secara terbuka.
                         </p>
                     </div>
-                    <a href="#status-seleksi" class="selection-link">SK Direktur POLMED →</a>
+                    <a href="#status-seleksi" class="selection-link">Cek Kelulusan →</a>
                 </div>
 
             </div>
         </div>
     </section>
 
-
-    <!-- KOMPONEN BEASISWA DAN AGENDA -->
-    <section class="information-section" id="dokumen">
+    <!-- KOMPONEN BEASISWA, SYARAT & JADWAL -->
+    <section class="information-section" id="persyaratan">
         <div class="information-container">
 
             <div class="information-grid">
 
-                <div class="benefit-area">
-
-                    <span class="information-badge">
-                        BANTUAN & CAKUPAN BEASISWA
-                    </span>
-
-                    <h2 class="information-heading">
-                        Komponen Beasiswa POLMED
-                    </h2>
-
-                    <p class="information-subtitle">
-                        Penerima Beasiswa Politeknik Negeri Medan mendapatkan
-                        fasilitas pembiayaan pendidikan terjamin hingga lulus tepat waktu:
-                    </p>
+                <div>
+                    <div class="section-head" style="margin-bottom: 24px;">
+                        <span class="section-kicker">Cakupan &amp; Ketentuan</span>
+                        <h2 class="section-title">Komponen Beasiswa</h2>
+                        <p class="section-subtitle">
+                            Fasilitas pembiayaan pendidikan yang diberikan kepada penerima beasiswa aktif hingga lulus tepat waktu.
+                        </p>
+                    </div>
 
                     <div class="benefit-grid">
-
                         <div class="benefit-card">
-                            <div class="benefit-icon">▦</div>
                             <h3>Biaya Pendidikan (UKT/SPP)</h3>
                             <p>
-                                Bebas biaya pendidikan 100% per semester yang
-                                disalurkan langsung untuk jenjang D3 dan Sarjana
-                                Terapan (D4) POLMED.
+                                Pembebasan biaya pendidikan 100% per semester bagi mahasiswa penerima beasiswa aktif.
                             </p>
                         </div>
 
                         <div class="benefit-card">
-                            <div class="benefit-icon">▣</div>
-                            <h3>Tunjangan Biaya Hidup & Riset</h3>
+                            <h3>Tunjangan Biaya Hidup</h3>
                             <p>
-                                Bantuan subsidi biaya hidup dan uang saku per semester
-                                yang ditransfer langsung ke rekening bank aktif
-                                mahasiswa penerima.
+                                Subsidi biaya hidup per semester yang disalurkan langsung ke rekening bank aktif mahasiswa penerima.
                             </p>
                         </div>
-
                     </div>
 
                     <div class="requirement-card">
-                        <h3 class="requirement-title">
-                            ◉ SYARAT UTAMA PENERIMA BEASISWA POLMED
-                        </h3>
+                        <h3 class="requirement-title">Syarat Utama Penerima Beasiswa</h3>
 
                         <ul class="requirement-list">
                             <li>
                                 <span class="requirement-number">1</span>
-                                Mahasiswa aktif Politeknik Negeri Medan (jenjang D3 atau Sarjana Terapan/D4).
+                                <span>Mahasiswa aktif yang terdaftar pada pangkalan data pendidikan tinggi.</span>
                             </li>
                             <li>
                                 <span class="requirement-number">2</span>
-                                Memiliki Indeks Prestasi Kumulatif (IPK) minimal 3.50 pada semester berjalan.
+                                <span>Memiliki Indeks Prestasi Kumulatif (IPK) minimal <strong class="mono">3.50</strong> pada semester berjalan.</span>
                             </li>
                             <li>
                                 <span class="requirement-number">3</span>
-                                Berkelakuan baik, berintegritas, serta tidak sedang menerima beasiswa lain.
+                                <span>Berkelakuan baik, berintegritas, serta tidak sedang menerima beasiswa lain.</span>
                             </li>
                             <li>
                                 <span class="requirement-number">4</span>
-                                Dinyatakan lolos seluruh rangkaian seleksi administrasi dan wawancara.
+                                <span>Lolos seluruh rangkaian verifikasi berkas administrasi dan tahap wawancara.</span>
                             </li>
                         </ul>
                     </div>
-
                 </div>
 
-
-                <!-- AGENDA -->
+                <!-- JADWAL TIMELINE -->
                 <div class="agenda-card">
-
-                    <span class="information-badge">AGENDA RESMI</span>
-
-                    <h2 class="agenda-title">
-                        Jadwal Tahapan Seleksi ({{ date('Y') }})
-                    </h2>
-
+                    <span class="section-kicker">Agenda Resmi</span>
+                    <h2 class="agenda-title">Jadwal Seleksi {{ date('Y') }}</h2>
                     <p class="agenda-description">
-                        Pastikan tidak melewati setiap agenda pendaftaran
-                        dan seleksi beasiswa berikut:
+                        Perhatikan setiap batas waktu tahapan pendaftaran berikut.
                     </p>
 
-                    <div class="agenda-item">
-                        <div class="agenda-date">FEB - MAR {{ date('Y') }}</div>
-                        <div class="agenda-content">
-                            <h4>Pendaftaran & Unggah Berkas</h4>
-                            <p>Pendaftaran online dan pengunggahan berkas melalui portal SIBEKA POLMED.</p>
+                    <div class="agenda-timeline">
+                        <div class="agenda-item">
+                            <div class="agenda-date">FEB – MAR {{ date('Y') }}</div>
+                            <div class="agenda-content">
+                                <h4>Pendaftaran &amp; Unggah Berkas</h4>
+                                <p>Registrasi akun, pengisian formulir, dan unggah dokumen melalui portal SIBEKA.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="agenda-item">
-                        <div class="agenda-date">MAR - APR {{ date('Y') }}</div>
-                        <div class="agenda-content">
-                            <h4>Seleksi Administrasi & Verifikasi</h4>
-                            <p>Pemeriksaan keabsahan dokumen akademik dan sertifikat prestasi mahasiswa.</p>
+                        <div class="agenda-item">
+                            <div class="agenda-date">MAR – APR {{ date('Y') }}</div>
+                            <div class="agenda-content">
+                                <h4>Seleksi Administrasi &amp; Verifikasi</h4>
+                                <p>Pemeriksaan kelengkapan dan keabsahan dokumen oleh tim verifikator.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="agenda-item">
-                        <div class="agenda-date">MEI - JUNI {{ date('Y') }}</div>
-                        <div class="agenda-content">
-                            <h4>Pengumuman Hasil Seleksi Berkas</h4>
-                            <p>Publikasi daftar peserta yang memenuhi syarat dan berhak ke tahap wawancara.</p>
+                        <div class="agenda-item">
+                            <div class="agenda-date">MEI – JUN {{ date('Y') }}</div>
+                            <div class="agenda-content">
+                                <h4>Pengumuman Seleksi Berkas</h4>
+                                <p>Publikasi daftar peserta yang memenuhi syarat menuju tahap wawancara.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="agenda-item">
-                        <div class="agenda-date">JULI {{ date('Y') }}</div>
-                        <div class="agenda-content">
-                            <h4>Uji Wawancara & Kelayakan</h4>
-                            <p>Tahap wawancara komprehensif bersama dewan penguji beasiswa POLMED.</p>
+                        <div class="agenda-item">
+                            <div class="agenda-date">JUL {{ date('Y') }}</div>
+                            <div class="agenda-content">
+                                <h4>Wawancara &amp; Kelayakan</h4>
+                                <p>Tahap wawancara komprehensif bersama dewan penguji beasiswa.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="agenda-item">
-                        <div class="agenda-date">AGUSTUS {{ date('Y') }}</div>
-                        <div class="agenda-content">
-                            <h4>Pengumuman Akhir & SK Direktur</h4>
-                            <p>Penetapan penerima resmi beasiswa dan penandatanganan komitmen beasiswa.</p>
+                        <div class="agenda-item">
+                            <div class="agenda-date">AGU {{ date('Y') }}</div>
+                            <div class="agenda-content">
+                                <h4>Pengumuman Akhir &amp; Penetapan</h4>
+                                <p>Penetapan penerima resmi beasiswa dan publikasi hasil akhir.</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="agenda-warning">
-                        ⚠ Jadwal dan ketentuan tahapan seleksi beasiswa dapat disesuaikan dengan kalender akademik resmi Politeknik Negeri Medan.
+                        Jadwal dan ketentuan tahapan seleksi dapat disesuaikan dengan kalender akademik resmi.
                     </div>
-
                 </div>
 
             </div>
         </div>
     </section>
 
-
-    <!-- SAMBUTAN PIMPINAN -->
-    <section class="leader-section">
-        <div class="leader-container">
-
-            <div class="leader-photo-area">
-
-                <img
-                    src="{{ asset('build/assets/image/idham kamil.jpg') }}"
-                    alt="Direktur Politeknik Negeri Medan"
-                    class="leader-photo"
-                    onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Idham+Kamil&background=07122f&color=fff&size=512';">
-
-                <h3 class="leader-name">
-                    Dr. Ir. Idham Kamil, S.T., M.T.
-                </h3>
-
-                <p class="leader-position">
-                    Direktur Politeknik Negeri Medan
-                </p>
-
-            </div>
-
-            <div class="leader-content">
-
-                <span class="information-badge">SAMBUTAN PIMPINAN</span>
-
-                <h2 class="leader-title">
-                    Mendorong Generasi Berprestasi dan
-                    Berdaya Saing Global Melalui
-                    <span>Beasiswa POLMED</span>
-                </h2>
-
-                <p class="leader-description">
-                    Politeknik Negeri Medan senantiasa berkomitmen untuk
-                    mendukung mahasiswa berprestasi dan berdedikasi tinggi
-                    agar terus berkembang menjadi lulusan vokasi yang unggul,
-                    terampil, dan siap kerja.
-                </p>
-
-                <p class="leader-description">
-                    Melalui program Beasiswa POLMED (SIBEKA), kami memberikan
-                    ruang seluas-luasnya bagi mahasiswa aktif dengan IPK unggul
-                    untuk meraih potensi terbaik mereka tanpa hambatan.
-                </p>
-
-                <p class="leader-description">
-                    Kami meyakini bahwa apresiasi atas kerja keras akademik
-                    akan membentuk insan vokasi yang berintegritas tinggi
-                    serta berdaya saing di kancah nasional maupun internasional.
-                </p>
-
-            </div>
-        </div>
-    </section>
-
-
-    <!-- FOOTER SIBEKA POLMED -->
-    <footer class="footer">
-        <div class="footer-container">
-
-            <div class="footer-grid">
-
-                <!-- IDENTITAS -->
-                <div class="footer-brand-area">
-
-                    <div class="footer-brand">
-
-                        <img
-                            src="{{ asset('build/assets/image/logo sibeka.png') }}"
-                            alt="Logo SIBEKA POLMED"
-                            class="footer-logo"
-                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=P&background=2563eb&color=fff';">
-
-                        <div>
-                            <h3>SIBEKA POLMED</h3>
-                            <p>
-                                Sistem Informasi Beasiswa Politeknik Negeri Medan
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <p class="footer-description">
-                        Portal resmi seleksi dan pengelolaan Beasiswa Politeknik
-                        Negeri Medan. Mewujudkan pendidikan tinggi vokasi yang
-                        berdaya saing, berkeadilan, dan mendorong prestasi
-                        gemilang anak bangsa.
-                    </p>
-
-                    <p class="footer-address">
-                        Jl. Almamater No. 1, Kampus USU, Padang Bulan,
-                        Kota Medan, Sumatera Utara 20155
-                    </p>
-
-                </div>
-
-
-                <!-- TAUTAN RESMI -->
-                <div class="footer-column">
-
-                    <h4>TAUTAN RESMI</h4>
-
-                    <ul class="footer-links">
-
-                        <li>
-                            <a href="https://www.polmed.ac.id/" target="_blank">
-                                Website Resmi POLMED
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="https://siakad.polmed.ac.id/" target="_blank">
-                                SIAKAD POLMED
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" target="_blank">
-                                Panduan & Pedoman Beasiswa
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" target="_blank">
-                                Pengumuman SK Direktur Beasiswa
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="https://www.kemdikbud.go.id/" target="_blank">
-                                Kemendikbudristek
-                            </a>
-                        </li>
-
-                    </ul>
-
-                </div>
-
-
-                <!-- LAYANAN DAN INFORMASI -->
-                <div class="footer-column">
-
-                    <h4>LAYANAN & INFORMASI</h4>
-
-                    <ul class="footer-links">
-
-                        <li>
-                            <a href="#faq">Pusat Bantuan & FAQ Beasiswa</a>
-                        </li>
-
-                        <li>
-                            <a href="#syarat">Syarat & Ketentuan Penerima</a>
-                        </li>
-
-                        <li>
-                            <a href="#kontak">Kontak Helpdesk Beasiswa POLMED</a>
-                        </li>
-
-                        <li>
-                            <a href="#status-seleksi">Pengumuman Kelulusan Seleksi</a>
-                        </li>
-
-                        <li>
-                            <a href="#pengaduan">Layanan Bantuan & Pengaduan</a>
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-
-            <!-- COPYRIGHT -->
-            <div class="footer-bottom">
-
-                <p class="footer-copyright">
-                    © {{ date('Y') }} Politeknik Negeri Medan.
-                    Hak Cipta Dilindungi Undang-Undang.
-                </p>
-
-                <div class="footer-bottom-links">
-
-                    <a href="#kebijakan-privasi">
-                        Kebijakan Privasi
-                    </a>
-
-                    <span style="color:#64748b;">•</span>
-
-                    <a href="#syarat">
-                        Syarat & Ketentuan
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-    </footer>
+    @include('layouts.partials.welcome-footer')
 
 </body>
 

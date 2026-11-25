@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Mahasiswa extends Model
 {
@@ -26,11 +27,28 @@ class Mahasiswa extends Model
         'jurusan',
         'program_studi',
         'no_hp',
+        'foto_profil',
     ];
 
     protected $casts = [
         'face_descriptor' => 'encrypted',
     ];
+
+    public function getFotoUrlAttribute(): ?string
+    {
+        if (! $this->foto_profil) {
+            return null;
+        }
+
+        if (! Storage::disk('public')->exists($this->foto_profil)) {
+            return null;
+        }
+
+        return route('foto.profil', [
+            'mahasiswa' => $this->nim,
+            'v'         => optional($this->updated_at)->timestamp ?? time(),
+        ]);
+    }
 
     // Relasi mahasiswa dengan akun pengguna
     public function user(): BelongsTo

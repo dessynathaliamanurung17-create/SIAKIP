@@ -16,7 +16,7 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -27,5 +27,15 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
         ];
+
+        if (! $this->user()->isAdmin() && $this->user()->mahasiswa) {
+            $rules['jurusan']       = ['required', 'string', 'max:100'];
+            $rules['program_studi'] = ['required', 'string', 'max:100'];
+            $rules['no_hp']         = ['nullable', 'string', 'max:20'];
+            $rules['foto_profil']   = ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+            $rules['hapus_foto']    = ['nullable', 'boolean'];
+        }
+
+        return $rules;
     }
 }

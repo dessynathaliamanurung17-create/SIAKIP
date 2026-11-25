@@ -1,27 +1,23 @@
 <x-guest-layout>
-    <div class="min-h-screen py-10 px-4 flex flex-col justify-center items-center">
+    <div class="min-h-screen py-10 px-4 flex flex-col justify-center items-center bg-gradient-to-br from-[#e7f0fb] via-[#f4f8fe] to-[#dce9fa]">
         
-        <!-- KARTU UTAMA REGISTRASI (TEMA IDENTIK DENGAN LOGIN) -->
+        <!-- KARTU UTAMA REGISTRASI -->
         <div class="w-full max-w-2xl rounded-[2.5rem] p-7 md:p-10 shadow-2xl border border-white/15 relative overflow-hidden backdrop-blur-md"
-             style="background: linear-gradient(180deg, rgba(7, 18, 47, 0.94) 0%, rgba(4, 12, 33, 0.98) 100%), url('{{ asset('build/assets/image/polmed.jpg') }}') center/cover no-repeat;">
+             style="background: linear-gradient(180deg, rgba(7, 18, 47, 0.94) 0%, rgba(4, 12, 33, 0.98) 100%), url('{{ asset('images/plmd.jpeg') }}') center/cover no-repeat;">
             
             <!-- HEADER KARTU (LOGO & JUDUL) -->
             <div class="text-center mb-7">
-                <!-- Badge Logo POLMED -->
-                <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/30 to-blue-600/10 p-2.5 border border-sky-400/30 shadow-lg flex items-center justify-center">
-                    <img src="{{ asset('build/assets/image/logo polmed.png') }}" 
-                         alt="Logo POLMED" 
-                         class="w-full h-full object-contain filter drop-shadow"
-                         onerror="this.onerror=null; this.src='{{ asset('build/assets/image/logo%20polmed.png') }}';">
+                <!-- Badge Logo SIBEKA -->
+                <div class="w-20 h-20 mx-auto rounded-2xl bg-white p-2 shadow-lg flex items-center justify-center">
+                    <img src="{{ asset('images/logo%20sibeka.png') }}" 
+                         alt="Logo SIBEKA" 
+                         class="w-full h-full object-contain">
                 </div>
 
-                <!-- Judul SIBEKA POLMED -->
+                <!-- Judul SIBEKA -->
                 <h1 class="text-2xl font-black tracking-wide text-white mt-3 uppercase leading-none">
                     SIBEKA
                 </h1>
-                <div class="text-2xl font-black tracking-wider text-[#1ea7fd] uppercase mt-1 leading-none">
-                    POLMED
-                </div>
                 <p class="text-[11px] font-bold tracking-[0.2em] text-slate-300 uppercase mt-2">
                     SISTEM INFORMASI BEASISWA
                 </p>
@@ -51,7 +47,7 @@
                     <!-- 1. Name -->
                     <div>
                         <label for="name" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Nama Lengkap <span class="text-red-400">*</span>
+                            Nama Lengkap
                         </label>
                         <input id="name" 
                                type="text" 
@@ -66,7 +62,7 @@
                     <!-- 2. NIM -->
                     <div>
                         <label for="nim" class="block text-xs font-semibold text-slate-200 mb-1">
-                            NIM <span class="text-red-400">*</span>
+                            NIM
                         </label>
                         <input id="nim" 
                                type="text" 
@@ -81,7 +77,7 @@
                     <!-- 3. Email Address -->
                     <div>
                         <label for="email" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Email <span class="text-red-400">*</span>
+                            Email
                         </label>
                         <input id="email" 
                                type="email" 
@@ -110,7 +106,7 @@
                     <!-- 5. Jurusan -->
                     <div>
                         <label for="jurusan" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Jurusan <span class="text-red-400">*</span>
+                            Jurusan
                         </label>
                         <input id="jurusan" 
                                type="text" 
@@ -125,7 +121,7 @@
                     <!-- 6. Program Studi -->
                     <div>
                         <label for="program_studi" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Program Studi <span class="text-red-400">*</span>
+                            Program Studi
                         </label>
                         <input id="program_studi" 
                                type="text" 
@@ -140,7 +136,7 @@
                     <!-- 7. Password -->
                     <div>
                         <label for="password" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Password <span class="text-red-400">*</span>
+                            Password
                         </label>
                         <input id="password" 
                                type="password" 
@@ -154,7 +150,7 @@
                     <!-- 8. Confirm Password -->
                     <div>
                         <label for="password_confirmation" class="block text-xs font-semibold text-slate-200 mb-1">
-                            Konfirmasi Password <span class="text-red-400">*</span>
+                            Konfirmasi Password
                         </label>
                         <input id="password_confirmation" 
                                type="password" 
@@ -185,15 +181,10 @@
 
                 <!-- FOOTER KARTU -->
                 <div class="text-center mt-6 pt-4 border-t border-white/10 text-[11px] text-slate-400">
-                    © Politeknik Negeri Medan
+                    © {{ date('Y') }} SIBEKA
                 </div>
 
             </form>
-        </div>
-
-        <!-- FOOTER DI BAWAH KARTU (PERSIS SEPERTI GAMBAR LOGIN) -->
-        <div class="text-center mt-4 text-xs text-slate-400 font-medium tracking-wide">
-            Akses Terpadu Sivitas Akademika • Kampus USU Medan Baru
         </div>
 
     </div>

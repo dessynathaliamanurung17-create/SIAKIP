@@ -20,22 +20,21 @@
      class="fixed inset-0 z-40 bg-[#07122f]/50 backdrop-blur-sm lg:hidden">
 </div>
 
-<!-- NAVIGATION DRAWER (SIDEBAR KIRI ADMIN — NAVY GRADIENT POLMED) -->
+<!-- NAVIGATION DRAWER (SIDEBAR KIRI ADMIN) -->
 <aside :class="drawerOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
        class="fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-[#081533] via-[#0c1f4a] to-[#0a193b] text-blue-50 border-r border-blue-900/60 flex flex-col transition-transform duration-200 ease-out shadow-2xl lg:shadow-lg">
 
     <!-- 1. BRAND HEADER DRAWER -->
     <div class="h-16 px-5 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group focus:outline-none">
-            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1.5 shadow-md shadow-blue-950/40 shrink-0 group-hover:scale-105 transition">
-                <img src="{{ asset('build/assets/image/logo polmed.png') }}"
-                     alt="Logo POLMED"
-                     class="w-full h-full object-contain"
-                     onerror="this.onerror=null; this.src='{{ asset('polmed.png') }}';">
+            <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-md shadow-blue-950/40 shrink-0 group-hover:scale-105 transition">
+                <img src="{{ asset('images/logo%20sibeka.png') }}"
+                     alt="Logo SIBEKA"
+                     class="w-full h-full object-contain">
             </div>
             <div class="min-w-0">
                 <div class="font-extrabold text-sm text-white tracking-tight leading-tight">
-                    SIBEKA POLMED
+                    SIBEKA
                 </div>
                 <p class="text-[11px] font-medium text-sky-300/80 leading-tight mt-0.5">
                     Admin

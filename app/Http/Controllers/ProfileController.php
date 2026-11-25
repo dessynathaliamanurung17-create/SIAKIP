@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Mahasiswa;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -16,8 +18,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user()->load('mahasiswa.application');
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user'      => $user,
+            'mahasiswa' => $user->mahasiswa,
         ]);
     }
 
@@ -26,15 +31,58 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill([
+            'name'  => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        if (! $user->isAdmin() && $user->mahasiswa) {
+            $mhs = $user->mahasiswa;
+            $updateMhs = [
+                'jurusan'       => $validated['jurusan'],
+                'program_studi' => $validated['program_studi'],
+                'no_hp'         => $validated['no_hp'] ?? null,
+            ];
+
+            if ($request->boolean('hapus_foto') && $mhs->foto_profil) {
+                Storage::disk('public')->delete($mhs->foto_profil);
+                $updateMhs['foto_profil'] = null;
+            }
+
+            if ($request->hasFile('foto_profil')) {
+                if ($mhs->foto_profil) {
+                    Storage::disk('public')->delete($mhs->foto_profil);
+                }
+                $updateMhs['foto_profil'] = $request->file('foto_profil')->store('profil-mahasiswa', 'public');
+            }
+
+            $mhs->update($updateMhs);
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Tampilkan file foto profil mahasiswa secara langsung (bebas masalah symlink & APP_URL).
+     */
+    public function foto(Mahasiswa $mahasiswa)
+    {
+        if (! $mahasiswa->foto_profil || ! Storage::disk('public')->exists($mahasiswa->foto_profil)) {
+            abort(404);
+        }
+
+        return response()->file(Storage::disk('public')->path($mahasiswa->foto_profil), [
+            'Cache-Control' => 'private, max-age=3600',
+        ]);
     }
 
     /**

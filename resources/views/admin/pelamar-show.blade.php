@@ -2,7 +2,7 @@
     @php
         $mhs       = $application->mahasiswa;
         $user      = $mhs?->user;
-        $nama      = $user?->name ?? 'Mahasiswa POLMED';
+        $nama      = $user?->name ?? 'Mahasiswa';
         $parts     = preg_split('/\s+/', trim($nama));
         $initials  = strtoupper(substr($parts[0] ?? 'M', 0, 1) . substr($parts[1] ?? ($parts[0] ?? ''), 0, 1));
         $statusVal = strtolower($application->status ?? 'draft');
@@ -94,8 +94,12 @@
             <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-7">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-700 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md shadow-blue-600/20">
-                            {{ $initials }}
+                        <div class="w-14 h-14 rounded-2xl overflow-hidden bg-blue-700 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md shadow-blue-600/20 border border-blue-200">
+                            @if ($mhs?->foto_url)
+                                <img src="{{ $mhs->foto_url }}" alt="Foto {{ $nama }}" class="w-full h-full object-cover">
+                            @else
+                                {{ $initials }}
+                            @endif
                         </div>
                         <div class="space-y-1">
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">{{ $nama }}</h3>
