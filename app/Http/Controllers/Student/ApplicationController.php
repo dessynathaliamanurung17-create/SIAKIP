@@ -72,8 +72,9 @@ class ApplicationController extends Controller
 
     public function status()
     {
-        $application = auth()->user()->mahasiswa?->application;
+        $mhs = auth()->user()->mahasiswa;
+        $application = $mhs?->application?->load('documents');
 
-        return view('student.status', compact('application'));
+        return view('student.status', compact('application', 'mhs'));
     }
 }
