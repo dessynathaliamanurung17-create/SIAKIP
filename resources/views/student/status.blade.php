@@ -25,57 +25,53 @@
     $initials = strtoupper(substr(auth()->user()->name, 0, 2));
 
     $statusPendaftaran = strtolower($application->status ?? '');
-    $hasilVerifikasi = strtolower($application->hasil_verifikasi ?? '');
-    $hasilAkhir = strtolower($application->hasil_akhir ?? '');
+    $hasilVerifikasi   = strtolower($application->hasil_verifikasi ?? '');
+    $statusWawancara   = strtolower($application->status_wawancara ?? 'belum');
+    $hasilAkhir        = strtolower($application->hasil_akhir ?? '');
 
     // Data berkas dokumen
-    $docs = $application ? $application->documents : collect();
-    $totalDocs = $docs->count();
-    $wajibDocs = ['kk', 'ktm', 'penghasilan'];
+    $docs          = $application ? $application->documents : collect();
+    $totalDocs     = $docs->count();
+    $wajibDocs     = ['kk', 'ktm', 'penghasilan'];
     $uploadedWajib = $docs->whereIn('jenis', $wajibDocs)->pluck('jenis')->toArray();
-    $missingWajib = array_diff($wajibDocs, $uploadedWajib);
-    $validDocs = $docs->where('status_verifikasi', 'valid')->count();
+    $missingWajib  = array_diff($wajibDocs, $uploadedWajib);
+    $validDocs     = $docs->where('status_verifikasi', 'valid')->count();
 
-    // 1. TAHAP PENDAFTARAN: Ceklist jika sudah mendaftar (data application ada)
-    $step1_done = !empty($application);
+    // 1. TAHAP PENDAFTARAN: Selesai jika formulir pendaftaran sudah diisi
+    $step1_done   = !empty($application);
     $step1_active = !$step1_done;
 
-    // 2. TAHAP INPUT BERKAS: Ceklist jika berkas wajib sudah diunggah / status diajukan / diverifikasi
-    $step2_done = $step1_done && (empty($missingWajib) || in_array($statusPendaftaran, ['diajukan', 'diverifikasi']) || $totalDocs >= 3);
+    // 2. TAHAP INPUT BERKAS: Selesai jika 3 dokumen wajib sudah diunggah
+    $step2_done   = $step1_done && empty($missingWajib);
     $step2_active = $step1_done && !$step2_done;
 
-    // 3. TAHAP PENGUMUMAN SELEKSI BERKAS: Ceklist jika berkas diverifikasi & lulus oleh admin
-    $step3_lulus = $step2_done && (
-    $statusPendaftaran === 'diverifikasi' ||
-    ($totalDocs > 0 && $validDocs === $totalDocs) ||
-    !empty($hasilAkhir) ||
-    str_contains($hasilVerifikasi, 'lolos') ||
-    str_contains($hasilVerifikasi, 'valid') ||
-    str_contains($hasilVerifikasi, 'terverifikasi')
-    );
-    $step3_ditolak = $statusPendaftaran === 'ditolak' || str_contains($hasilVerifikasi, 'tidak lolos') || str_contains($hasilVerifikasi, 'ditolak');
-    $step3_active = $step2_done && !$step3_lulus && !$step3_ditolak;
+    // 3. TAHAP PENGUMUMAN SELEKSI BERKAS: Dikuasai penuh oleh Admin (status = diverifikasi / ditolak)
+    $step3_lulus   = $step2_done && ($statusPendaftaran === 'diverifikasi' || !empty($hasilAkhir));
+    $step3_ditolak = $statusPendaftaran === 'ditolak';
+    $step3_active  = $step2_done && !$step3_lulus && !$step3_ditolak;
 
-    // 4. TAHAP SELEKSI WAWANCARA: Ceklist jika wawancara sudah selesai / dinilai
-    $step4_done = $step3_lulus && (
-    !is_null($application?->skor) ||
-    !empty($hasilAkhir) ||
-    str_contains($hasilVerifikasi, 'wawancara selesai')
-    );
+    // 4. TAHAP SELEKSI WAWANCARA: Selesai jika admin sudah tetapkan hasil wawancara (lulus / tidak_lulus)
+    $step4_done   = $step3_lulus && in_array($statusWawancara, ['lulus', 'tidak_lulus'], true);
     $step4_active = $step3_lulus && !$step4_done;
 
-    // 5. TAHAP PENGUMUMAN HASIL WAWANCARA: Ceklist jika skor/hasil wawancara sudah keluar
-    $step5_done = $step4_done && (
-    !is_null($application?->skor) ||
-    !empty($hasilAkhir)
-    );
-    $step5_active = $step4_done && !$step5_done;
+    // 5. TAHAP HASIL WAWANCARA: Lulus / Tidak Lulus sesuai penetapan Admin
+    $step5_lulus   = $statusWawancara === 'lulus';
+    $step5_ditolak = $statusWawancara === 'tidak_lulus';
+    $step5_done    = $step5_lulus;
+    $step5_active  = $step3_lulus && $statusWawancara === 'dijadwalkan';
 
-    // 6. TAHAP PENGUMUMAN KELULUSAN FINAL: Ceklist jika SK Direktur sudah ditetapkan
-    $isLolosAkhir = in_array($hasilAkhir, ['diterima', 'lolos']);
-    $isGagalAkhir = in_array($hasilAkhir, ['ditolak', 'gagal']);
-    $step6_done = !empty($hasilAkhir);
-    $step6_active = $step5_done && !$step6_done;
+    // 6. TAHAP KELULUSAN FINAL: Ditetapkan oleh Admin lewat hasil_akhir
+    $isLolosAkhir = in_array($hasilAkhir, ['diterima', 'lolos'], true);
+    $isGagalAkhir = in_array($hasilAkhir, ['ditolak', 'gagal'], true);
+    $step6_done   = !empty($hasilAkhir);
+    $step6_active = $step5_lulus && !$step6_done;
+
+    $wawancaraLabel = match ($statusWawancara) {
+        'dijadwalkan' => 'Dijadwalkan (Siap Dihubungi via WhatsApp)',
+        'lulus'       => 'Lulus Wawancara',
+        'tidak_lulus' => 'Tidak Lulus Wawancara',
+        default       => 'Belum Dijadwalkan',
+    };
     @endphp
 
     <div class="py-8 bg-slate-50/70 min-h-screen" x-data="{ showWawancaraCard: false }">
@@ -180,7 +176,7 @@
                         </a>
 
                         <!-- 3. TAHAP 03: Pengumuman Seleksi Berkas -->
-                        <a href="{{ route('mahasiswa.dokumen') }}" class="flex flex-col items-center text-center group transition-transform hover:scale-105 cursor-pointer {{ !$step3_lulus && !$step3_active ? 'opacity-70' : '' }}" title="Klik nomor untuk menuju Pengumuman Seleksi Berkas">
+                        <a href="#ringkasan-seleksi" class="flex flex-col items-center text-center group transition-transform hover:scale-105 cursor-pointer {{ !$step3_lulus && !$step3_active && !$step3_ditolak ? 'opacity-70' : '' }}" title="Lihat hasil seleksi berkas">
                             <!-- ANGKA DI ATAS -->
                             @if ($step3_lulus)
                             <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 shadow-sm shadow-emerald-500/20 group-hover:border-emerald-300">
@@ -234,58 +230,62 @@
                         </button>
 
                         <!-- 5. TAHAP 05: Hasil Wawancara -->
-                        <div class="flex flex-col items-center text-center {{ !$step5_done && !$step5_active ? 'opacity-70' : '' }}">
+                        <a href="#ringkasan-seleksi" class="flex flex-col items-center text-center group transition-transform hover:scale-105 cursor-pointer {{ !$step5_done && !$step5_ditolak && !$step5_active ? 'opacity-70' : '' }}" title="Lihat hasil wawancara">
                             <!-- ANGKA DI ATAS -->
-                            @if ($step5_done)
-                            <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 shadow-sm shadow-emerald-500/20" title="Hasil Wawancara Diumumkan">
+                            @if ($step5_lulus)
+                            <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 shadow-sm shadow-emerald-500/20 group-hover:border-emerald-300">
                                 ✓
                             </div>
+                            @elseif ($step5_ditolak)
+                            <div class="w-11 h-11 rounded-2xl bg-rose-500/20 border border-rose-400/50 text-rose-400 flex items-center justify-center font-bold text-sm shrink-0">
+                                ✕
+                            </div>
                             @elseif ($step5_active)
-                            <div class="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/40 ring-2 ring-blue-400/30 shrink-0">
+                            <div class="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/40 ring-2 ring-blue-400/30 shrink-0 group-hover:bg-blue-400">
                                 05
                             </div>
                             @else
-                            <div class="w-11 h-11 rounded-2xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0">
+                            <div class="w-11 h-11 rounded-2xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0 group-hover:bg-white/20">
                                 05
                             </div>
                             @endif
                             <!-- KETERANGAN DI BAWAH -->
                             <div class="mt-2.5 space-y-0.5">
-                                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tahap 05</p>
-                                <p class="text-xs font-semibold {{ $step5_done ? 'text-slate-200' : ($step5_active ? 'text-white' : 'text-slate-300') }} leading-tight">
-                                    Hasil Wawancara
+                                <p class="text-[10px] text-slate-400 group-hover:text-slate-300 uppercase tracking-wider font-semibold">Tahap 05</p>
+                                <p class="text-xs font-semibold {{ $step5_lulus ? 'text-emerald-300' : ($step5_ditolak ? 'text-rose-200' : ($step5_active ? 'text-white' : 'text-slate-300')) }} group-hover:text-white leading-tight">
+                                    {{ $step5_ditolak ? 'Tidak Lulus' : 'Hasil Wawancara' }}
                                 </p>
                             </div>
-                        </div>
+                        </a>
 
                         <!-- 6. TAHAP 06: Pengumuman Kelulusan Final -->
-                        <div class="flex flex-col items-center text-center {{ !$step6_done && !$step6_active ? 'opacity-70' : '' }}">
+                        <a href="#ringkasan-seleksi" class="flex flex-col items-center text-center group transition-transform hover:scale-105 cursor-pointer {{ !$step6_done && !$step6_active ? 'opacity-70' : '' }}" title="Lihat pengumuman kelulusan final">
                             <!-- ANGKA DI ATAS -->
                             @if ($isLolosAkhir)
-                            <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 shadow-sm shadow-emerald-500/20" title="Lolos Beasiswa">
+                            <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0 shadow-sm shadow-emerald-500/20 group-hover:border-emerald-300">
                                 ✓
                             </div>
                             @elseif ($isGagalAkhir)
-                            <div class="w-11 h-11 rounded-2xl bg-rose-500/20 border border-rose-400/50 text-rose-400 flex items-center justify-center font-bold text-sm shrink-0" title="Tidak Lolos">
+                            <div class="w-11 h-11 rounded-2xl bg-rose-500/20 border border-rose-400/50 text-rose-400 flex items-center justify-center font-bold text-sm shrink-0">
                                 ✕
                             </div>
                             @elseif ($step6_active)
-                            <div class="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/40 ring-2 ring-blue-400/30 shrink-0">
+                            <div class="w-11 h-11 rounded-2xl bg-blue-500 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-blue-500/40 ring-2 ring-blue-400/30 shrink-0 group-hover:bg-blue-400">
                                 06
                             </div>
                             @else
-                            <div class="w-11 h-11 rounded-2xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0">
+                            <div class="w-11 h-11 rounded-2xl bg-white/10 text-slate-300 border border-white/10 flex items-center justify-center font-bold text-sm shrink-0 group-hover:bg-white/20">
                                 06
                             </div>
                             @endif
                             <!-- KETERANGAN DI BAWAH -->
                             <div class="mt-2.5 space-y-0.5">
-                                <p class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Tahap 06</p>
-                                <p class="text-xs font-semibold {{ $isLolosAkhir ? 'text-emerald-300' : ($isGagalAkhir ? 'text-rose-200' : ($step6_active ? 'text-white' : 'text-slate-300')) }} leading-tight">
+                                <p class="text-[10px] text-slate-400 group-hover:text-slate-300 uppercase tracking-wider font-semibold">Tahap 06</p>
+                                <p class="text-xs font-semibold {{ $isLolosAkhir ? 'text-emerald-300' : ($isGagalAkhir ? 'text-rose-200' : ($step6_active ? 'text-white' : 'text-slate-300')) }} group-hover:text-white leading-tight">
                                     {{ $isLolosAkhir ? 'Lolos Final' : ($isGagalAkhir ? 'Tidak Lolos' : 'Kelulusan Final') }}
                                 </p>
                             </div>
-                        </div>
+                        </a>
 
                     </div>
                 </div>
@@ -347,22 +347,39 @@
 
                 <!-- Konten Kartu Wawancara -->
                 <div class="p-6 space-y-6">
-                    <!-- 3 Kotak Detail Jadwal & Lokasi -->
+                    <!-- 3 Kotak Detail Jadwal & WhatsApp Wawancara (REAL DARI ADMIN) -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-1">
-                            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Waktu & Sesi Wawancara</span>
-                            <p class="font-extrabold text-sm text-slate-900">08.30 - 15.30 WIB</p>
-                            <p class="text-xs text-slate-500">Sesuai sesi jadwal pemanggilan masing-masing prodi / jurusan.</p>
+                            <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Jadwal Wawancara</span>
+                            <p class="font-extrabold text-sm text-slate-900">
+                                {{ $application?->jadwal_wawancara ?: 'Menunggu Penjadwalan Admin' }}
+                            </p>
+                            <p class="text-xs text-slate-500">Jadwal ditetapkan langsung oleh panitia seleksi.</p>
                         </div>
-                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Tempat / Ruang Wawancara</span>
-                            <p class="font-extrabold text-sm text-slate-900">Gedung Direktorat Lt. 1</p>
-                            <p class="text-xs text-slate-500">Ruang Rapat Kemahasiswaan / Tautan Zoom Resmi Panitia.</p>
+
+                        <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 space-y-1">
+                            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Media: WhatsApp Pendaftar</span>
+                            <p class="font-extrabold font-mono text-sm text-slate-900">
+                                {{ $mhsData?->no_hp ?: 'Nomor WA belum diisi' }}
+                            </p>
+                            <p class="text-xs text-slate-600">
+                                Pewawancara akan menghubungi nomor WA Anda ini.
+                                <a href="{{ route('profile.edit') }}" class="text-blue-700 font-semibold hover:underline">Ubah No. WA →</a>
+                            </p>
                         </div>
+
                         <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200/80 space-y-1">
-                            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">Tim Penguji & Penilai</span>
-                            <p class="font-extrabold text-sm text-slate-900">Tim Panitia Beasiswa BAK</p>
-                            <p class="text-xs text-slate-500">Dosen Verifikator & Tim Bagian Administrasi Kemahasiswaan.</p>
+                            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">Status Wawancara</span>
+                            <p class="font-extrabold text-sm {{ $step5_lulus ? 'text-emerald-700' : ($step5_ditolak ? 'text-rose-700' : 'text-slate-900') }}">
+                                {{ $wawancaraLabel }}
+                            </p>
+                            <p class="text-xs text-slate-500">
+                                @if ($application?->skor !== null)
+                                    Skor Penilaian: <strong class="font-mono text-slate-800">{{ number_format((float) $application->skor, 2) }}</strong>
+                                @else
+                                    Pastikan WhatsApp aktif saat jadwal berlangsung.
+                                @endif
+                            </p>
                         </div>
                     </div>
 
@@ -409,7 +426,7 @@
                     <!-- Tombol Tutup & Bantuan -->
                     <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                         <p class="text-xs text-slate-500">
-                            Jika memiliki kendala jadwal, silakan lapor ke loket BAK Gedung Direktorat Lt. 1.
+                            Jika memiliki kendala jadwal, silakan hubungi Tim Pengelola Beasiswa SIBEKA.
                         </p>
                         <button type="button" @click="showWawancaraCard = false" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition shadow-sm">
                             Tutup Kartu Informasi
@@ -487,13 +504,13 @@
                         </div>
 
                         <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200/60 text-slate-700 leading-relaxed">
-                            Gunakan NIM yang terdaftar resmi. Jika terdapat ketidaksesuaian status berkas, kunjungi loket layanan BAK Gedung Direktorat Lt. 1.
+                            Gunakan NIM yang terdaftar resmi. Jika terdapat ketidaksesuaian status berkas, silakan hubungi Tim Pengelola Beasiswa SIBEKA.
                         </div>
                     </div>
                 </div>
 
                 <!-- KOLOM KANAN: STATUS DETAIL / AKSI PENDAFTARAN -->
-                <div class="lg:col-span-8 space-y-5">
+                <div id="ringkasan-seleksi" class="lg:col-span-8 space-y-5 scroll-mt-24">
 
                     @if (! $application)
                     <!-- TAMPILAN JIKA BELUM MENDAFTAR -->
@@ -539,7 +556,7 @@
                                         @elseif ($step3_lulus)
                                         Lolos Seleksi Berkas Administrasi
                                         @elseif ($step2_done)
-                                        Menunggu Verifikasi Berkas oleh Tim BAK
+                                        Menunggu Verifikasi Berkas oleh Tim Seleksi SIBEKA
                                         @else
                                         Tahap Pengunggahan Berkas Persyaratan
                                         @endif
@@ -760,13 +777,7 @@
                                     <span>Unduh Bukti Tanda Lolos (.PDF)</span>
                                 </button>
 
-                                <a href="#pusat-bantuan"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span>Hubungi Layanan BAK</span>
-                                </a>
+
                             </div>
                         </div>
 

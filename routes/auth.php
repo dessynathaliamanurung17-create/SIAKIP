@@ -22,6 +22,14 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    // Portal login khusus administrator (terpisah dari login mahasiswa & tidak ditautkan di halaman publik)
+    Route::get('portal-admin-sibeka', [AuthenticatedSessionController::class, 'createAdmin'])
+        ->name('admin.login');
+
+    Route::post('portal-admin-sibeka', [AuthenticatedSessionController::class, 'storeAdmin'])
+        ->middleware('throttle:10,1,admin_login')
+        ->name('admin.login.store');
+
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
 

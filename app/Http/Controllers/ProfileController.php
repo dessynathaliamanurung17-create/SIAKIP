@@ -48,6 +48,7 @@ class ProfileController extends Controller
         if (! $user->isAdmin() && $user->mahasiswa) {
             $mhs = $user->mahasiswa;
             $updateMhs = [
+                'asal_kampus'   => $validated['asal_kampus'],
                 'jurusan'       => $validated['jurusan'],
                 'program_studi' => $validated['program_studi'],
                 'no_hp'         => $validated['no_hp'] ?? null,
@@ -74,8 +75,13 @@ class ProfileController extends Controller
     /**
      * Tampilkan file foto profil mahasiswa secara langsung (bebas masalah symlink & APP_URL).
      */
-    public function foto(Mahasiswa $mahasiswa)
+    public function foto(Request $request, Mahasiswa $mahasiswa)
     {
+        $user = $request->user();
+        if (! $user->isAdmin() && $mahasiswa->user_id !== $user->id) {
+            abort(403);
+        }
+
         if (! $mahasiswa->foto_profil || ! Storage::disk('public')->exists($mahasiswa->foto_profil)) {
             abort(404);
         }

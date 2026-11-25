@@ -62,6 +62,10 @@ class HealthController extends Controller
         $kode = Artisan::call('db:backup');
         AuditLogger::record('backup_manual');
 
-        return back()->with('status', $kode === 0 ? 'Backup berhasil dibuat.' : 'Backup gagal, cek konfigurasi MYSQLDUMP_PATH.');
+        if ($kode === 0) {
+            return back()->with('status', 'Backup database terenkripsi berhasil dibuat.');
+        }
+
+        return back()->with('error', 'Backup gagal dijalankan. Periksa koneksi database atau konfigurasi MYSQLDUMP_PATH.');
     }
 }

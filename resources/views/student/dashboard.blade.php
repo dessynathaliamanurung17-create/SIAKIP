@@ -64,7 +64,7 @@
                     </span>
                 </div>
 
-                <div class="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-100">
                         <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">Nama Lengkap</span>
                         <span class="text-sm font-bold text-slate-800 block truncate">{{ auth()->user()->name }}</span>
@@ -73,6 +73,13 @@
                     <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-100">
                         <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">Nomor Induk Mahasiswa (NIM)</span>
                         <span class="text-sm font-bold text-slate-800 font-mono block">{{ $mhs?->nim ?? '-' }}</span>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-100">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">Asal Kampus</span>
+                        <span class="text-sm font-bold text-slate-800 block truncate" title="{{ $mhs?->asal_kampus }}">
+                            {{ $mhs?->asal_kampus ?: '-' }}
+                        </span>
                     </div>
 
                     <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-100">

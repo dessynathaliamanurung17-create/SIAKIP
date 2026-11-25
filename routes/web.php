@@ -26,9 +26,9 @@ Route::get('/dashboard', function () {
 // verifikasi wajah (hanya mahasiswa, belum perlu face.verified)
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('face')->name('face.')->group(function () {
     Route::get('/daftar', [FaceController::class, 'enrollForm'])->name('enroll');
-    Route::post('/daftar', [FaceController::class, 'enroll'])->middleware('throttle:5,1')->name('enroll.store');
+    Route::post('/daftar', [FaceController::class, 'enroll'])->middleware('throttle:5,1,face_enroll')->name('enroll.store');
     Route::get('/verifikasi', [FaceController::class, 'verifyForm'])->name('verify');
-    Route::post('/verifikasi', [FaceController::class, 'verify'])->middleware('throttle:5,1')->name('verify.store');
+    Route::post('/verifikasi', [FaceController::class, 'verify'])->middleware('throttle:5,1,face_verify')->name('verify.store');
 });
 
 Route::get('/health', [HealthController::class, 'publik'])
@@ -54,7 +54,7 @@ Route::middleware(['auth', 'role:mahasiswa', 'face.verified'])->prefix('mahasisw
 
 // unduh: mahasiswa pemilik (harus lolos wajah) atau admin, dicek oleh Policy
 Route::get('/dokumen/{document}/unduh', [DocumentController::class, 'download'])
-    ->middleware(['auth', 'face.verified', 'throttle:20,1'])
+    ->middleware(['auth', 'face.verified', 'throttle:20,1,doc_download'])
     ->name('dokumen.unduh');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
 
     Route::get('/pelamar', [AdminApplicationController::class, 'index'])->name('pelamar');
-    Route::get('/pelamar/export', [AdminApplicationController::class, 'export'])->middleware('throttle:10,1')->name('pelamar.export');
+    Route::get('/pelamar/export', [AdminApplicationController::class, 'export'])->middleware('throttle:10,1,pelamar_export')->name('pelamar.export');
     Route::get('/pelamar/{application}', [AdminApplicationController::class, 'show'])->name('pelamar.show');
     Route::put('/pelamar/{application}/seleksi', [AdminApplicationController::class, 'updateSeleksi'])->name('pelamar.seleksi');
 
@@ -70,7 +70,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/dokumen/{document}/verifikasi', [AdminApplicationController::class, 'verifikasiDokumen'])->name('dokumen.verifikasi');
 
     Route::get('/sistem', [HealthController::class, 'sistem'])->name('sistem');
-Route::post('/sistem/backup', [HealthController::class, 'backup'])->middleware('throttle:3,1')->name('sistem.backup');
+    Route::post('/sistem/backup', [HealthController::class, 'backup'])->middleware('throttle:5,1,admin_backup')->name('sistem.backup');
 });
 
 Route::middleware('auth')->group(function () {

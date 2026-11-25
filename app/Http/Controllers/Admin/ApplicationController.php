@@ -65,6 +65,7 @@ class ApplicationController extends Controller
                     ->orWhereHas('mahasiswa', function ($mq) use ($search) {
                         $mq->where('program_studi', 'like', "%{$search}%")
                             ->orWhere('jurusan', 'like', "%{$search}%")
+                            ->orWhere('asal_kampus', 'like', "%{$search}%")
                             ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$search}%"));
                     });
             });
@@ -112,6 +113,7 @@ class ApplicationController extends Controller
                     ->orWhereHas('mahasiswa', function ($mq) use ($search) {
                         $mq->where('program_studi', 'like', "%{$search}%")
                             ->orWhere('jurusan', 'like', "%{$search}%")
+                            ->orWhere('asal_kampus', 'like', "%{$search}%")
                             ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$search}%"));
                     });
             });
@@ -164,6 +166,7 @@ class ApplicationController extends Controller
                 'NIM',
                 'Nama Mahasiswa',
                 'Email',
+                'Asal Kampus',
                 'Jurusan',
                 'Program Studi',
                 'Semester',
@@ -182,6 +185,7 @@ class ApplicationController extends Controller
                     $safe($a->mahasiswa_nim),
                     $safe($a->mahasiswa?->user?->name ?? '-'),
                     $safe($a->mahasiswa?->user?->email ?? '-'),
+                    $safe($a->mahasiswa?->asal_kampus ?? '-'),
                     $safe($a->mahasiswa?->jurusan ?? '-'),
                     $safe($a->mahasiswa?->program_studi ?? '-'),
                     $a->semester,
@@ -219,6 +223,8 @@ class ApplicationController extends Controller
         $data = $request->validate([
             'status'           => ['required', 'in:draft,diajukan,diverifikasi,ditolak'],
             'hasil_verifikasi' => ['nullable', 'string', 'max:1000'],
+            'status_wawancara' => ['required', 'in:belum,dijadwalkan,lulus,tidak_lulus'],
+            'jadwal_wawancara' => ['nullable', 'string', 'max:150'],
             'skor'             => ['nullable', 'numeric', 'between:0,100'],
             'hasil_akhir'      => ['nullable', 'in:diterima,ditolak'],
         ]);
@@ -236,6 +242,8 @@ class ApplicationController extends Controller
         // kolom ini tidak fillable, sengaja di-set langsung oleh admin
         $application->status           = $data['status'];
         $application->hasil_verifikasi = $data['hasil_verifikasi'] ?? null;
+        $application->status_wawancara = $data['status_wawancara'];
+        $application->jadwal_wawancara = $data['jadwal_wawancara'] ?? null;
         $application->skor             = $data['skor'] ?? null;
         $application->hasil_akhir      = $data['hasil_akhir'] ?? null;
         $application->save(); // observer mencatat siapa, kapan, apa yang berubah

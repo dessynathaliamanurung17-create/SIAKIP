@@ -37,6 +37,7 @@ class RegisteredUserController extends Controller
             'name'          => ['required', 'string', 'max:255'],
             'email'         => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'nim'           => ['required', 'regex:/^[0-9]{5,20}$/', 'unique:mahasiswa,nim'],
+            'asal_kampus'   => ['required', 'string', 'max:150'],
             'jurusan'       => ['required', 'string', 'max:100'],
             'program_studi' => ['required', 'string', 'max:100'],
             'no_hp'         => ['nullable', 'regex:/^[0-9+]{8,20}$/'],
@@ -54,6 +55,7 @@ class RegisteredUserController extends Controller
             Mahasiswa::create([
                 'nim'           => $request->nim,
                 'user_id'       => $user->id,
+                'asal_kampus'   => $request->asal_kampus,
                 'jurusan'       => $request->jurusan,
                 'program_studi' => $request->program_studi,
                 'no_hp'         => $request->no_hp,

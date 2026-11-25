@@ -104,6 +104,10 @@
                                     </h3>
                                     <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-blue-100/85">
                                         <span class="font-mono font-semibold text-white">NIM: {{ $mhs?->nim ?? '-' }}</span>
+                                        @if ($mhs?->asal_kampus)
+                                            <span class="text-blue-300/50">•</span>
+                                            <span class="font-semibold text-sky-200">{{ $mhs->asal_kampus }}</span>
+                                        @endif
                                         <span class="text-blue-300/50">•</span>
                                         <span>{{ $mhs?->program_studi ?? '-' }}</span>
                                         <span class="text-blue-300/50">•</span>

@@ -104,6 +104,18 @@
                 </div>
             </div>
 
+            <div>
+                <label for="asal_kampus" class="block text-xs font-semibold text-slate-600 mb-1.5">
+                    Asal Kampus / Perguruan Tinggi
+                </label>
+                <input id="asal_kampus" name="asal_kampus" type="text"
+                       value="{{ old('asal_kampus', $mhs->asal_kampus) }}"
+                       required
+                       placeholder="Contoh: Universitas Sumatera Utara / Politeknik Negeri Medan"
+                       class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition">
+                <x-input-error class="mt-1.5 text-xs" :messages="$errors->get('asal_kampus')" />
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="jurusan" class="block text-xs font-semibold text-slate-600 mb-1.5">

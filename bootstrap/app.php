@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'face.verified' => \App\Http\Middleware\FaceVerified::class,
         ]);
         $middleware->web(append: [
-            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':120,1',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':120,1,web_global',
         ]);
     })
 

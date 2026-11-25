@@ -249,8 +249,11 @@
                                         </div>
                                     </td>
 
-                                    <!-- Jurusan & Prodi -->
+                                    <!-- Kampus, Jurusan & Prodi -->
                                     <td class="py-3.5 px-3">
+                                        @if ($a->mahasiswa?->asal_kampus)
+                                            <p class="font-semibold text-blue-700 text-xs">{{ $a->mahasiswa->asal_kampus }}</p>
+                                        @endif
                                         <p class="font-medium text-slate-800 text-sm">{{ $a->mahasiswa?->program_studi ?? '-' }}</p>
                                         <p class="text-xs text-slate-500">{{ $a->mahasiswa?->jurusan ?? '-' }}</p>
                                     </td>

@@ -103,6 +103,21 @@
                         <x-input-error :messages="$errors->get('no_hp')" class="mt-1 text-xs text-red-400" />
                     </div>
 
+                    <!-- 4b. Asal Kampus / Perguruan Tinggi -->
+                    <div class="md:col-span-2">
+                        <label for="asal_kampus" class="block text-xs font-semibold text-slate-200 mb-1">
+                            Asal Kampus / Perguruan Tinggi
+                        </label>
+                        <input id="asal_kampus" 
+                               type="text" 
+                               name="asal_kampus" 
+                               value="{{ old('asal_kampus') }}" 
+                               required
+                               placeholder="Contoh: Universitas Sumatera Utara / Politeknik Negeri Medan"
+                               class="w-full px-4 py-2.5 bg-[#eaf3fc] text-slate-800 placeholder-slate-400 rounded-xl border border-sky-200/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1ea7fd] text-sm transition shadow-inner">
+                        <x-input-error :messages="$errors->get('asal_kampus')" class="mt-1 text-xs text-red-400" />
+                    </div>
+
                     <!-- 5. Jurusan -->
                     <div>
                         <label for="jurusan" class="block text-xs font-semibold text-slate-200 mb-1">

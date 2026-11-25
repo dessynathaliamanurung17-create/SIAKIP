@@ -29,6 +29,7 @@ class ProfileUpdateRequest extends FormRequest
         ];
 
         if (! $this->user()->isAdmin() && $this->user()->mahasiswa) {
+            $rules['asal_kampus']   = ['required', 'string', 'max:150'];
             $rules['jurusan']       = ['required', 'string', 'max:100'];
             $rules['program_studi'] = ['required', 'string', 'max:100'];
             $rules['no_hp']         = ['nullable', 'string', 'max:20'];

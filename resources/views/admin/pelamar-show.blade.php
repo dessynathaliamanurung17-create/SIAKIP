@@ -16,6 +16,20 @@
         $penghasilanFmt = is_numeric($penghasilan)
             ? 'Rp ' . number_format((float) $penghasilan, 0, ',', '.')
             : ($penghasilan ?: '-');
+
+        // Format nomor HP untuk tautan WhatsApp wawancara
+        $rawHp = preg_replace('/[^0-9]/', '', (string) ($mhs?->no_hp ?? ''));
+        if (str_starts_with($rawHp, '0')) {
+            $waNumber = '62' . substr($rawHp, 1);
+        } else {
+            $waNumber = $rawHp;
+        }
+        $waText = rawurlencode(
+            "Halo {$nama} (NIM: {$application->mahasiswa_nim}), kami dari Tim Seleksi Beasiswa SIBEKA. "
+            . ($application->jadwal_wawancara ? "Anda dijadwalkan mengikuti wawancara pada {$application->jadwal_wawancara}. " : "Anda dijadwalkan untuk tahap wawancara seleksi beasiswa. ")
+            . "Mohon konfirmasi kesiapan Anda. Terima kasih."
+        );
+        $waUrl = $waNumber ? "https://wa.me/{$waNumber}?text={$waText}" : null;
     @endphp
 
     <x-slot name="header">
@@ -105,6 +119,10 @@
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">{{ $nama }}</h3>
                             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
                                 <span class="font-mono font-semibold text-slate-700">NIM: {{ $application->mahasiswa_nim }}</span>
+                                @if ($mhs?->asal_kampus)
+                                    <span class="text-slate-300">•</span>
+                                    <span class="font-semibold text-blue-700">{{ $mhs->asal_kampus }}</span>
+                                @endif
                                 <span class="text-slate-300">•</span>
                                 <span>{{ $mhs?->program_studi ?? '-' }}</span>
                                 <span class="text-slate-300">•</span>
@@ -163,6 +181,10 @@
                             <div class="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100">
                                 <span class="text-xs font-semibold text-slate-500 block">No. HP / WhatsApp</span>
                                 <p class="font-mono font-medium text-slate-800 mt-1">{{ $mhs?->no_hp ?: '-' }}</p>
+                            </div>
+                            <div class="sm:col-span-2 p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100">
+                                <span class="text-xs font-semibold text-slate-500 block">Asal Kampus / Perguruan Tinggi</span>
+                                <p class="font-semibold text-slate-900 mt-1">{{ $mhs?->asal_kampus ?: '-' }}</p>
                             </div>
                             <div class="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100">
                                 <span class="text-xs font-semibold text-slate-500 block">Jurusan</span>
@@ -329,6 +351,19 @@
                             </div>
                         @endif
 
+                        <!-- HUBUNGI WAWANCARA VIA WHATSAPP -->
+                        @if ($waUrl)
+                            <a href="{{ $waUrl }}" target="_blank" rel="noopener"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition shadow-sm">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.52 3.48A11.86 11.86 0 0012.06 0C5.47 0 .1 5.37.1 11.96c0 2.1.55 4.16 1.6 5.97L0 24l6.24-1.64a11.9 11.9 0 005.82 1.49h.01c6.59 0 11.96-5.37 11.96-11.96 0-3.2-1.25-6.2-3.51-8.41zM12.07 21.8h-.01a9.87 9.87 0 01-5.04-1.38l-.36-.21-3.7.97.99-3.61-.24-.37a9.84 9.84 0 01-1.51-5.24c0-5.44 4.43-9.87 9.88-9.87 2.64 0 5.12 1.03 6.98 2.9a9.82 9.82 0 012.89 6.98c0 5.45-4.43 9.83-9.88 9.83zm5.42-7.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.08-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>
+                                <span>Hubungi Wawancara (WhatsApp)</span>
+                            </a>
+                        @else
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500 text-center">
+                                Mahasiswa belum mengisi nomor HP/WhatsApp.
+                            </div>
+                        @endif
+
                         <form method="POST" action="{{ route('admin.pelamar.seleksi', $application) }}" class="space-y-4">
                             @csrf
                             @method('PUT')
@@ -343,6 +378,28 @@
                                         <option value="{{ $val }}" @selected(old('status', $application->status) === $val)>{{ $label }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div>
+                                <label for="status_wawancara" class="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Status Wawancara
+                                </label>
+                                <select id="status_wawancara" name="status_wawancara"
+                                    class="w-full text-sm font-medium bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    @foreach (['belum' => 'Belum Dijadwalkan', 'dijadwalkan' => 'Dijadwalkan (Siap WA)', 'lulus' => 'Lulus Wawancara', 'tidak_lulus' => 'Tidak Lulus Wawancara'] as $val => $label)
+                                        <option value="{{ $val }}" @selected(old('status_wawancara', $application->status_wawancara ?? 'belum') === $val)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="jadwal_wawancara" class="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Jadwal Wawancara (Opsional)
+                                </label>
+                                <input id="jadwal_wawancara" type="text" name="jadwal_wawancara"
+                                    value="{{ old('jadwal_wawancara', $application->jadwal_wawancara) }}"
+                                    placeholder="Contoh: Kamis, 28 Nov · 10:00 WIB"
+                                    class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
 
                             <div>
